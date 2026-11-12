@@ -18,15 +18,15 @@
         extend: {
           colors: {
             monster: {
-              black: '#050505',
-              charcoal: '#0d0e0d',
-              panel: '#121412',
-              border: '#1f261e',
-              neon: '#95D600',
-              acid: '#39FF14',
-              darkGreen: '#192b05',
-              danger: '#ff2a5f',
-              amber: '#ffb800',
+              void: '#0E0C0D',
+              cyan: '#00AFEF',
+              steel: '#3192BB',
+              mist: '#E0E9EC',
+              white: '#FFFFFF',
+              mauve: '#B89898',
+              plum: '#7A4A65',
+              pink: '#BC6382',
+              crimson: '#A9295D',
             }
           },
           fontFamily: {
@@ -40,43 +40,53 @@
   </script>
 
   <style>
-    /* Custom Cyber / Monster Energy Aesthetics */
+    /* Custom Cyber / Pipeline Punch & Ultra Rosa Aesthetics */
     :root {
-      --neon: #95D600;
-      --acid: #39FF14;
-      --bg-void: #050505;
+      --cyan: #00AFEF;
+      --steel: #3192BB;
+      --mist: #E0E9EC;
+      --mauve: #B89898;
+      --plum: #7A4A65;
+      --pink: #BC6382;
+      --crimson: #A9295D;
+      --bg-void: #0E0C0D;
     }
 
     body {
-      background-color: #050505;
-      color: #e4e8e3;
+      background-color: #0E0C0D;
+      color: #E0E9EC;
       background-image:
-        radial-gradient(circle at 15% 15%, rgba(149, 214, 0, 0.06) 0%, transparent 38%),
-        radial-gradient(circle at 85% 80%, rgba(57, 255, 20, 0.04) 0%, transparent 40%),
-        linear-gradient(rgba(149, 214, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(149, 214, 0, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+        radial-gradient(circle at 14% 12%, rgba(0, 175, 239, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 86% 82%, rgba(169, 41, 93, 0.14) 0%, transparent 42%),
+        radial-gradient(circle at 50% 45%, rgba(122, 74, 101, 0.08) 0%, transparent 55%),
+        linear-gradient(rgba(49, 146, 187, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(188, 99, 130, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
       overflow-x: hidden;
     }
 
-    /* Jagged Claw-Clipped Corners */
+    /* Jagged Claw-Clipped Cards */
     .claw-card {
-      background: linear-gradient(165deg, #111411 0%, #0a0b0a 100%);
-      border: 1px solid #222b20;
+      background: linear-gradient(165deg, rgba(122, 74, 101, 0.14) 0%, rgba(14, 12, 13, 0.96) 100%);
+      border: 1px solid rgba(122, 74, 101, 0.55);
       position: relative;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .claw-card:hover {
-      border-color: rgba(149, 214, 0, 0.45);
-      box-shadow: 0 0 24px rgba(149, 214, 0, 0.08);
+      border-color: #00AFEF;
+      box-shadow: 0 0 26px rgba(0, 175, 239, 0.16), 0 0 12px rgba(188, 99, 130, 0.12);
     }
 
     .neon-glow {
-      box-shadow: 0 0 15px rgba(149, 214, 0, 0.35), inset 0 0 8px rgba(149, 214, 0, 0.15);
+      box-shadow: 0 0 16px rgba(0, 175, 239, 0.35), 0 0 10px rgba(169, 41, 93, 0.3), inset 0 0 8px rgba(0, 175, 239, 0.2);
     }
 
     .neon-text-glow {
-      text-shadow: 0 0 12px rgba(149, 214, 0, 0.55);
+      text-shadow: 0 0 14px rgba(0, 175, 239, 0.65);
+    }
+
+    .punch-text-glow {
+      text-shadow: 0 0 14px rgba(188, 99, 130, 0.65);
     }
 
     /* Custom Scrollbar */
@@ -85,14 +95,14 @@
       height: 7px;
     }
     ::-webkit-scrollbar-track {
-      background: #080908;
+      background: #0E0C0D;
     }
     ::-webkit-scrollbar-thumb {
-      background: #273324;
+      background: #7A4A65;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #95D600;
+      background: #00AFEF;
     }
 
     /* Scanline Pulse Animation for Parser */
@@ -102,7 +112,7 @@
       100% { background-position: 0% 50%; }
     }
     .energy-bar {
-      background: linear-gradient(90deg, #5e8a00, #95D600, #39FF14, #95D600);
+      background: linear-gradient(90deg, #A9295D, #BC6382, #00AFEF, #3192BB);
       background-size: 200% 200%;
       animation: scanPulse 1.6s ease infinite;
     }
@@ -110,8 +120,8 @@
     /* Print Styles for Clean Formal Report Export */
     @media print {
       body {
-        background: #ffffff !important;
-        color: #111827 !important;
+        background: #FFFFFF !important;
+        color: #0E0C0D !important;
         background-image: none !important;
       }
       .no-print {
@@ -123,56 +133,64 @@
         margin: 0 !important;
       }
       .print-paper {
-        background: #ffffff !important;
-        color: #111827 !important;
+        background: #FFFFFF !important;
+        color: #0E0C0D !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
       }
       .print-paper * {
-        color: #111827 !important;
-        border-color: #d1d5db !important;
+        color: #0E0C0D !important;
+        border-color: #7A4A65 !important;
         background: transparent !important;
         text-shadow: none !important;
         box-shadow: none !important;
       }
       .print-badge {
-        border: 1px solid #374151 !important;
+        border: 1px solid #A9295D !important;
         padding: 2px 6px !important;
       }
     }
   </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-[#95D600] selection:text-black">
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-[#00AFEF] selection:text-[#FFFFFF]">
 
   <!-- Toast Notification Container (Replaces alert) -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none no-print"></div>
 
-  <!-- Background Watermark Claw SVG -->
-  <svg class="fixed -right-20 top-24 w-[460px] h-[460px] text-[#95D600]/[0.035] pointer-events-none select-none z-0 no-print" viewBox="0 0 200 200" fill="currentColor">
-    <!-- Three jagged iconic claw slashes -->
-    <path d="M42 15 L64 25 L54 75 L67 125 L50 185 L37 175 L48 122 L36 74 Z" />
-    <path d="M92 8 L116 20 L104 78 L119 132 L100 194 L85 182 L99 130 L85 75 Z" />
-    <path d="M142 18 L164 30 L152 80 L165 128 L148 182 L134 172 L146 125 L134 78 Z" />
+  <!-- Background Watermark Claw SVG with Dual-Tone Gradient -->
+  <svg class="fixed -right-20 top-24 w-[460px] h-[460px] pointer-events-none select-none z-0 no-print opacity-[0.07]" viewBox="0 0 200 200">
+    <defs>
+      <linearGradient id="bgClawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00AFEF" />
+        <stop offset="50%" stop-color="#BC6382" />
+        <stop offset="100%" stop-color="#A9295D" />
+      </linearGradient>
+    </defs>
+    <g fill="url(#bgClawGrad)">
+      <path d="M42 15 L64 25 L54 75 L67 125 L50 185 L37 175 L48 122 L36 74 Z" />
+      <path d="M92 8 L116 20 L104 78 L119 132 L100 194 L85 182 L99 130 L85 75 Z" />
+      <path d="M142 18 L164 30 L152 80 L165 128 L148 182 L134 172 L146 125 L134 78 Z" />
+    </g>
   </svg>
 
   <!-- TOP TACTICAL NAVBAR -->
-  <header class="sticky top-0 z-40 bg-[#070807]/95 backdrop-blur-md border-b border-[#222c20] no-print">
+  <header class="sticky top-0 z-40 bg-[#0E0C0D]/95 backdrop-blur-md border-b border-[#7A4A65]/60 no-print">
     <!-- Top Telemetry Micro-Banner -->
-    <div class="bg-[#0e130c] border-b border-[#1c261a] px-4 py-1.5 text-[11px] font-mono flex flex-wrap items-center justify-between gap-2 text-zinc-400">
+    <div class="bg-[#7A4A65]/20 border-b border-[#7A4A65]/40 px-4 py-1.5 text-[11px] font-mono flex flex-wrap items-center justify-between gap-2 text-[#B89898]">
       <div class="flex items-center gap-3">
-        <span class="inline-flex items-center gap-1.5 text-[#95D600] font-bold">
-          <span class="w-2 h-2 rounded-full bg-[#39FF14] animate-ping"></span>
+        <span class="inline-flex items-center gap-1.5 text-[#BC6382] font-bold">
+          <span class="w-2 h-2 rounded-full bg-[#A9295D] animate-ping"></span>
           THREAT LEVEL: UNLEASHED
         </span>
-        <span class="hidden sm:inline text-zinc-600">|</span>
-        <span class="hidden sm:inline">CAFFEINE OVERDRIVE: <strong class="text-[#95D600]">100%</strong></span>
-        <span class="hidden md:inline text-zinc-600">|</span>
-        <span class="hidden md:inline text-zinc-400">FORMULA: <span class="text-white">ZERO-DAY SUGAR FREE</span></span>
+        <span class="hidden sm:inline text-[#7A4A65]">|</span>
+        <span class="hidden sm:inline">CAFFEINE OVERDRIVE: <strong class="text-[#00AFEF]">100%</strong></span>
+        <span class="hidden md:inline text-[#7A4A65]">|</span>
+        <span class="hidden md:inline text-[#B89898]">FORMULA: <span class="text-[#FFFFFF]">PIPELINE // ULTRA ROSA</span></span>
       </div>
       <div class="flex items-center gap-3">
-        <span id="nav-incident-badge" class="text-[#95D600] font-semibold">CASE: IR-2026-0894-BEAST</span>
-        <button onclick="resetToDemoScenario()" class="text-xs px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-[#95D600] transition cursor-pointer" title="Reset pre-loaded ransomware scenario">
+        <span id="nav-incident-badge" class="text-[#00AFEF] font-semibold">CASE: IR-2026-0894-BEAST</span>
+        <button onclick="resetToDemoScenario()" class="text-xs px-2 py-0.5 rounded bg-[#0E0C0D] hover:bg-[#7A4A65]/30 border border-[#7A4A65] text-[#E0E9EC] hover:text-[#00AFEF] transition cursor-pointer" title="Reset pre-loaded ransomware scenario">
           ↻ RESET SCENARIO
         </button>
       </div>
@@ -183,24 +201,33 @@
       <!-- Brand Logo -->
       <div class="flex items-center gap-3 w-full lg:w-auto justify-between">
         <div class="flex items-center gap-3">
-          <!-- Custom Jagged Claw Emblem -->
-          <div class="w-10 h-10 rounded-lg bg-[#0e140c] border border-[#95D600]/60 flex items-center justify-center neon-glow shrink-0">
-            <svg class="w-7 h-7 text-[#95D600]" viewBox="0 0 100 100" fill="currentColor">
-              <path d="M20 8 L33 14 L27 42 L35 68 L25 94 L17 88 L24 65 L17 40 Z" />
-              <path d="M46 4 L60 11 L53 43 L62 72 L50 97 L41 91 L50 70 L42 41 Z" />
-              <path d="M72 10 L85 17 L78 44 L86 70 L76 92 L68 86 L75 68 L68 42 Z" />
+          <!-- Custom Jagged Claw Emblem with Dual-Tone Gradient Glow -->
+          <div class="w-10 h-10 rounded-lg bg-[#0E0C0D] border border-[#00AFEF] flex items-center justify-center neon-glow shrink-0">
+            <svg class="w-7 h-7" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="logoClawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00AFEF" />
+                  <stop offset="55%" stop-color="#BC6382" />
+                  <stop offset="100%" stop-color="#A9295D" />
+                </linearGradient>
+              </defs>
+              <g fill="url(#logoClawGrad)">
+                <path d="M20 8 L33 14 L27 42 L35 68 L25 94 L17 88 L24 65 L17 40 Z" />
+                <path d="M46 4 L60 11 L53 43 L62 72 L50 97 L41 91 L50 70 L42 41 Z" />
+                <path d="M72 10 L85 17 L78 44 L86 70 L76 92 L68 86 L75 68 L68 42 Z" />
+              </g>
             </svg>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-display font-bold text-xl sm:text-2xl tracking-wider text-white uppercase">
-                MONSTER <span class="text-[#95D600] neon-text-glow">// IR-OPS</span>
+              <span class="font-display font-bold text-xl sm:text-2xl tracking-wider text-[#FFFFFF] uppercase">
+                MONSTER <span class="text-[#00AFEF] neon-text-glow">// IR-OPS</span>
               </span>
-              <span class="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/40">
-                V4.2 NITRO
+              <span class="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-[#A9295D]/25 text-[#BC6382] border border-[#BC6382]/60">
+                V4.2 ROSA-PUNCH
               </span>
             </div>
-            <p class="text-[11px] font-mono text-zinc-400 tracking-wide">BEAST-MODE SOC: EVIDENCE-TO-REPORT ENGINE</p>
+            <p class="text-[11px] font-mono text-[#B89898] tracking-wide">BEAST-MODE SOC: EVIDENCE-TO-REPORT ENGINE</p>
           </div>
         </div>
       </div>
@@ -208,32 +235,40 @@
       <!-- 3-Stage Tactical View Switcher -->
       <nav class="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
         <button id="tab-ingest" onclick="switchView('ingest')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
-          <span class="font-mono text-xs opacity-75">01</span>
+          <span class="font-mono text-xs opacity-80">01</span>
           <span>INGEST // LOCKER</span>
-          <span id="badge-artifact-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-black/50 text-[#95D600] border border-[#95D600]/40">3</span>
+          <span id="badge-artifact-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-[#0E0C0D]/70 text-[#FFFFFF] border border-[#00AFEF]/50">3</span>
         </button>
 
-        <span class="text-zinc-600 font-mono hidden sm:inline">»</span>
+        <span class="text-[#7A4A65] font-mono hidden sm:inline">»</span>
 
         <button id="tab-triage" onclick="switchView('triage')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
-          <span class="font-mono text-xs opacity-75">02</span>
+          <span class="font-mono text-xs opacity-80">02</span>
           <span>TRIAGE // MATRIX</span>
-          <span id="badge-ioc-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-black/50 text-[#95D600] border border-[#95D600]/40">8</span>
+          <span id="badge-ioc-count" class="ml-1 px-1.5 py-0.2 text-[11px] font-mono rounded bg-[#0E0C0D]/70 text-[#FFFFFF] border border-[#00AFEF]/50">8</span>
         </button>
 
-        <span class="text-zinc-600 font-mono hidden sm:inline">»</span>
+        <span class="text-[#7A4A65] font-mono hidden sm:inline">»</span>
 
         <button id="tab-report" onclick="switchView('report')" class="nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border">
-          <span class="font-mono text-xs opacity-75">03</span>
+          <span class="font-mono text-xs opacity-80">03</span>
           <span>REPORT // DOSSIER</span>
         </button>
       </nav>
     </div>
 
-    <!-- Jagged Slash SVG Divider -->
-    <div class="w-full h-1.5 overflow-hidden bg-[#050505]">
+    <!-- Jagged Slash SVG Divider (Dual-Tone Cyan to Punch Pink/Crimson) -->
+    <div class="w-full h-2 overflow-hidden bg-[#0E0C0D]">
       <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 10">
-        <polygon points="0,0 1200,0 1185,10 920,3 610,10 300,2 15,10" fill="#95D600" fill-opacity="0.7" />
+        <defs>
+          <linearGradient id="slashDividerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#00AFEF" />
+            <stop offset="45%" stop-color="#3192BB" />
+            <stop offset="75%" stop-color="#BC6382" />
+            <stop offset="100%" stop-color="#A9295D" />
+          </linearGradient>
+        </defs>
+        <polygon points="0,0 1200,0 1185,10 920,3 610,10 300,2 15,10" fill="url(#slashDividerGrad)" />
       </svg>
     </div>
   </header>
@@ -246,20 +281,20 @@
     <!-- ===================================================================== -->
     <section id="view-ingest" class="space-y-6">
       <!-- Top Header & Quick Telemetry -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#1f261e] pb-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#7A4A65]/50 pb-4">
         <div>
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#BC6382] uppercase tracking-widest mb-1">
             <span>STAGE 01 // ARTIFACT ACQUISITION</span>
           </div>
-          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
-            INGEST // <span class="text-[#95D600]">EVIDENCE LOCKER</span>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-[#FFFFFF] uppercase tracking-wide">
+            INGEST // <span class="text-[#00AFEF] neon-text-glow">EVIDENCE LOCKER</span>
           </h1>
-          <p class="text-sm text-zinc-400 mt-1">
+          <p class="text-sm text-[#E0E9EC]/80 mt-1">
             Drop raw telemetry logs, email headers, or memory dumps—or inject pre-staged attack artifacts to test the automated IOC & timeline extraction engine.
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="unleashParser()" id="btn-unleash" class="px-5 py-3 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-sm sm:text-base tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(149,214,0,0.45)] transition transform active:scale-95 cursor-pointer">
+          <button onclick="unleashParser()" id="btn-unleash" class="px-5 py-3 rounded-lg bg-[#00AFEF] hover:bg-[#3192BB] text-[#FFFFFF] font-display font-bold text-sm sm:text-base tracking-wider uppercase flex items-center gap-2 shadow-[0_0_22px_rgba(0,175,239,0.5)] border border-[#E0E9EC]/30 transition transform active:scale-95 cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -273,20 +308,20 @@
         <!-- Left 7 Cols: Upload & Sample Loaders -->
         <div class="lg:col-span-7 space-y-5">
           <!-- Drag & Drop Zone -->
-          <div id="drop-zone" class="claw-card rounded-xl p-6 border-2 border-dashed border-[#2c3b29] hover:border-[#95D600] text-center transition cursor-pointer group">
+          <div id="drop-zone" class="claw-card rounded-xl p-6 border-2 border-dashed border-[#3192BB]/60 hover:border-[#00AFEF] text-center transition cursor-pointer group">
             <input type="file" id="file-input" class="hidden" multiple onchange="handleFileSelect(event)" />
-            <div class="w-12 h-12 rounded-xl bg-[#141c12] border border-[#95D600]/40 mx-auto flex items-center justify-center text-[#95D600] group-hover:scale-110 transition mb-3">
+            <div class="w-12 h-12 rounded-xl bg-[#00AFEF]/15 border border-[#00AFEF]/60 mx-auto flex items-center justify-center text-[#00AFEF] group-hover:scale-110 transition mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
-            <h3 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+            <h3 class="font-display font-bold text-lg text-[#FFFFFF] uppercase tracking-wide">
               DROP RAW EVIDENCE ARTIFACTS HERE
             </h3>
-            <p class="text-xs text-zinc-400 font-mono mt-1">
+            <p class="text-xs text-[#B89898] font-mono mt-1">
               SUPPORTS .LOG, .JSON, .EVTX, .EML, .TXT, .PS1 — AUTO-HASHED (SHA-256) ON INGEST
             </p>
-            <button type="button" onclick="document.getElementById('file-input').click()" class="mt-4 px-4 py-2 rounded-lg bg-[#161f14] hover:bg-[#1f2c1c] text-[#95D600] border border-[#95D600]/40 text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer">
+            <button type="button" onclick="document.getElementById('file-input').click()" class="mt-4 px-4 py-2 rounded-lg bg-[#3192BB]/25 hover:bg-[#00AFEF] text-[#E0E9EC] hover:text-[#FFFFFF] border border-[#00AFEF]/60 text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer">
               + BROWSE LOCAL FILES
             </button>
           </div>
@@ -294,29 +329,29 @@
           <!-- One-Click Tactical Sample Injectors -->
           <div class="claw-card rounded-xl p-5">
             <div class="flex items-center justify-between mb-3">
-              <span class="font-display font-bold text-sm uppercase tracking-wider text-white flex items-center gap-2">
-                <span class="w-2 h-2 bg-[#95D600] rounded-full"></span>
+              <span class="font-display font-bold text-sm uppercase tracking-wider text-[#FFFFFF] flex items-center gap-2">
+                <span class="w-2 h-2 bg-[#BC6382] rounded-full"></span>
                 INSTANT THREAT SAMPLE INJECTORS
               </span>
-              <span class="text-[11px] font-mono text-zinc-400">1-CLICK PAYLOADS</span>
+              <span class="text-[11px] font-mono text-[#B89898]">1-CLICK PAYLOADS</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <button onclick="injectSampleArtifact('sysmon')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
-                <div class="text-[10px] font-mono text-[#ff2a5f] font-bold uppercase">RANSOMWARE // EVTX</div>
-                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Ransomware Sysmon Log</div>
-                <div class="text-[11px] text-zinc-400 mt-1 font-mono">vssadmin.exe + CobaltStrike</div>
+              <button onclick="injectSampleArtifact('sysmon')" class="p-3 rounded-lg bg-[#0E0C0D] hover:bg-[#7A4A65]/25 border border-[#7A4A65]/60 hover:border-[#A9295D] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#A9295D] font-bold uppercase">RANSOMWARE // EVTX</div>
+                <div class="font-display font-bold text-sm text-[#FFFFFF] group-hover:text-[#00AFEF] mt-0.5">Load Ransomware Sysmon Log</div>
+                <div class="text-[11px] text-[#B89898] mt-1 font-mono">vssadmin.exe + CobaltStrike</div>
               </button>
 
-              <button onclick="injectSampleArtifact('phishing')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
-                <div class="text-[10px] font-mono text-[#ffb800] font-bold uppercase">INITIAL ACCESS // EML</div>
-                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Phishing Email Headers</div>
-                <div class="text-[11px] text-zinc-400 mt-1 font-mono">SPF Fail + Spoofed Invoice</div>
+              <button onclick="injectSampleArtifact('phishing')" class="p-3 rounded-lg bg-[#0E0C0D] hover:bg-[#7A4A65]/25 border border-[#7A4A65]/60 hover:border-[#BC6382] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#BC6382] font-bold uppercase">INITIAL ACCESS // EML</div>
+                <div class="font-display font-bold text-sm text-[#FFFFFF] group-hover:text-[#00AFEF] mt-0.5">Load Phishing Email Headers</div>
+                <div class="text-[11px] text-[#B89898] mt-1 font-mono">SPF Fail + Spoofed Invoice</div>
               </button>
 
-              <button onclick="injectSampleArtifact('powershell')" class="p-3 rounded-lg bg-[#0d120c] hover:bg-[#162114] border border-[#253322] hover:border-[#95D600] text-left transition cursor-pointer group">
-                <div class="text-[10px] font-mono text-[#39FF14] font-bold uppercase">EXECUTION // PS1</div>
-                <div class="font-display font-bold text-sm text-white group-hover:text-[#95D600] mt-0.5">Load Suspicious PowerShell Dump</div>
-                <div class="text-[11px] text-zinc-400 mt-1 font-mono">Encoded IEX + C2 Beacon</div>
+              <button onclick="injectSampleArtifact('powershell')" class="p-3 rounded-lg bg-[#0E0C0D] hover:bg-[#3192BB]/20 border border-[#7A4A65]/60 hover:border-[#00AFEF] text-left transition cursor-pointer group">
+                <div class="text-[10px] font-mono text-[#00AFEF] font-bold uppercase">EXECUTION // PS1</div>
+                <div class="font-display font-bold text-sm text-[#FFFFFF] group-hover:text-[#00AFEF] mt-0.5">Load Suspicious PowerShell Dump</div>
+                <div class="text-[11px] text-[#B89898] mt-1 font-mono">Encoded IEX + C2 Beacon</div>
               </button>
             </div>
           </div>
@@ -324,14 +359,14 @@
           <!-- Manual Raw Log / Snippet Paste Box -->
           <div class="claw-card rounded-xl p-5">
             <div class="flex items-center justify-between mb-2">
-              <label for="raw-paste-input" class="font-display font-bold text-sm uppercase tracking-wider text-white">
+              <label for="raw-paste-input" class="font-display font-bold text-sm uppercase tracking-wider text-[#FFFFFF]">
                 PASTE RAW LOG / IOC SNIPPET
               </label>
-              <input id="raw-paste-name" type="text" placeholder="artifact_snippet.log" class="bg-[#080a08] border border-[#253023] rounded px-2.5 py-1 text-xs font-mono text-zinc-200 focus:outline-none focus:border-[#95D600] w-44" />
+              <input id="raw-paste-name" type="text" placeholder="artifact_snippet.log" class="bg-[#0E0C0D] border border-[#7A4A65] rounded px-2.5 py-1 text-xs font-mono text-[#E0E9EC] placeholder-[#B89898]/60 focus:outline-none focus:border-[#00AFEF] w-44" />
             </div>
-            <textarea id="raw-paste-input" rows="3" placeholder="Paste raw firewall logs, command lines, IPs (e.g. 185.220.101.44), domains, or hashes here..." class="w-full bg-[#070907] border border-[#222b20] rounded-lg p-3 text-xs font-mono text-[#95D600] placeholder-zinc-600 focus:outline-none focus:border-[#95D600]"></textarea>
+            <textarea id="raw-paste-input" rows="3" placeholder="Paste raw firewall logs, command lines, IPs (e.g. 185.220.101.44), domains, or hashes here..." class="w-full bg-[#0E0C0D] border border-[#7A4A65]/70 rounded-lg p-3 text-xs font-mono text-[#00AFEF] placeholder-[#B89898]/50 focus:outline-none focus:border-[#00AFEF]"></textarea>
             <div class="flex justify-end mt-2.5">
-              <button onclick="ingestPastedText()" class="px-4 py-2 rounded-lg bg-[#182216] hover:bg-[#233320] text-[#95D600] border border-[#95D600]/40 font-display font-bold text-xs uppercase tracking-wider transition cursor-pointer">
+              <button onclick="ingestPastedText()" class="px-4 py-2 rounded-lg bg-[#7A4A65]/35 hover:bg-[#BC6382] text-[#FFFFFF] border border-[#BC6382]/60 font-display font-bold text-xs uppercase tracking-wider transition cursor-pointer">
                 + ADD SNIPPET TO LOCKER
               </button>
             </div>
@@ -340,16 +375,16 @@
 
         <!-- Right 5 Cols: High-Energy Parser Terminal & Progress -->
         <div class="lg:col-span-5 flex flex-col">
-          <div class="claw-card rounded-xl p-5 flex-1 flex flex-col justify-between bg-[#080a08]">
+          <div class="claw-card rounded-xl p-5 flex-1 flex flex-col justify-between bg-[#0E0C0D]">
             <div>
-              <div class="flex items-center justify-between border-b border-[#1f261e] pb-3 mb-3">
+              <div class="flex items-center justify-between border-b border-[#7A4A65]/50 pb-3 mb-3">
                 <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#ff2a5f]"></span>
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#ffb800]"></span>
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#95D600]"></span>
-                  <span class="font-mono text-xs font-bold text-zinc-300 ml-1">BEAST_PARSER_DAEMON.SH</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#A9295D]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#BC6382]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#00AFEF]"></span>
+                  <span class="font-mono text-xs font-bold text-[#E0E9EC] ml-1">BEAST_PARSER_DAEMON.SH</span>
                 </div>
-                <span id="parser-status-pill" class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30">
+                <span id="parser-status-pill" class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00AFEF]/20 text-[#00AFEF] border border-[#00AFEF]/50">
                   READY // ARMED
                 </span>
               </div>
@@ -357,27 +392,27 @@
               <!-- Progress Bar -->
               <div class="mb-3">
                 <div class="flex justify-between text-[11px] font-mono mb-1">
-                  <span class="text-zinc-400">EXTRACTION PIPELINE</span>
-                  <span id="parser-percent" class="text-[#95D600] font-bold">100%</span>
+                  <span class="text-[#B89898]">EXTRACTION PIPELINE</span>
+                  <span id="parser-percent" class="text-[#00AFEF] font-bold">100%</span>
                 </div>
-                <div class="w-full h-2.5 bg-[#121712] rounded-full overflow-hidden border border-[#243022]">
+                <div class="w-full h-2.5 bg-[#7A4A65]/25 rounded-full overflow-hidden border border-[#7A4A65]">
                   <div id="parser-progress-bar" class="h-full energy-bar transition-all duration-300" style="width: 100%"></div>
                 </div>
               </div>
 
               <!-- Live Terminal Output -->
-              <div id="parser-terminal" class="bg-[#040504] border border-[#1a2219] rounded-lg p-3 font-mono text-xs text-zinc-300 h-64 overflow-y-auto space-y-1.5 leading-relaxed">
-                <div class="text-[#95D600]">[SYS] MONSTER // IR-OPS v4.2 Nitro Engine Initialized.</div>
-                <div class="text-zinc-400">[INFO] Pre-loaded Scenario: <span class="text-white">Operation VenomLock (Ransomware Intrusion)</span>.</div>
-                <div class="text-zinc-400">[HASH] Verified 3 forensic artifacts in Evidence Locker.</div>
-                <div class="text-[#39FF14]">[OK] Extracted 8 high-confidence IOCs & 6 chronological timeline events.</div>
-                <div class="text-zinc-500">[TIP] Add new artifacts or click "UNLEASH PARSER" to re-compile Triage & Report.</div>
+              <div id="parser-terminal" class="bg-[#0E0C0D] border border-[#7A4A65]/50 rounded-lg p-3 font-mono text-xs text-[#E0E9EC] h-64 overflow-y-auto space-y-1.5 leading-relaxed">
+                <div class="text-[#00AFEF]">[SYS] MONSTER // IR-OPS v4.2 Rosa-Punch Engine Initialized.</div>
+                <div class="text-[#B89898]">[INFO] Pre-loaded Scenario: <span class="text-[#FFFFFF]">Operation VenomLock (Ransomware Intrusion)</span>.</div>
+                <div class="text-[#B89898]">[HASH] Verified 3 forensic artifacts in Evidence Locker.</div>
+                <div class="text-[#BC6382]">[OK] Extracted 8 high-confidence IOCs & 6 chronological timeline events.</div>
+                <div class="text-[#B89898]/75">[TIP] Add new artifacts or click "UNLEASH PARSER" to re-compile Triage & Report.</div>
               </div>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-[#1f261e] flex items-center justify-between text-xs font-mono">
-              <span class="text-zinc-400">ENGINE THROUGHPUT: <strong class="text-[#95D600]">1.42 GB/s</strong></span>
-              <button onclick="switchView('triage')" class="text-[#95D600] hover:underline font-bold cursor-pointer">
+            <div class="mt-4 pt-3 border-t border-[#7A4A65]/50 flex items-center justify-between text-xs font-mono">
+              <span class="text-[#B89898]">ENGINE THROUGHPUT: <strong class="text-[#00AFEF]">1.42 GB/s</strong></span>
+              <button onclick="switchView('triage')" class="text-[#BC6382] hover:text-[#00AFEF] hover:underline font-bold cursor-pointer transition">
                 PROCEED TO TRIAGE MATRIX →
               </button>
             </div>
@@ -387,14 +422,14 @@
 
       <!-- Live Evidence Queue Table -->
       <div class="claw-card rounded-xl overflow-hidden">
-        <div class="px-5 py-4 border-b border-[#1f261e] flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#0d100d]">
+        <div class="px-5 py-4 border-b border-[#7A4A65]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#7A4A65]/15">
           <div>
-            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
-              INGESTED EVIDENCE QUEUE (<span id="queue-count-label" class="text-[#95D600]">3</span> ARTIFACTS)
+            <h2 class="font-display font-bold text-lg text-[#FFFFFF] uppercase tracking-wide">
+              INGESTED EVIDENCE QUEUE (<span id="queue-count-label" class="text-[#00AFEF]">3</span> ARTIFACTS)
             </h2>
-            <p class="text-xs text-zinc-400 font-mono">Chain-of-custody cryptographic hashes & automated threat classification</p>
+            <p class="text-xs text-[#B89898] font-mono">Chain-of-custody cryptographic hashes & automated threat classification</p>
           </div>
-          <button onclick="clearAllArtifacts()" class="self-start sm:self-auto px-3 py-1.5 rounded bg-zinc-900 hover:bg-red-950/50 text-zinc-400 hover:text-[#ff2a5f] border border-zinc-800 hover:border-[#ff2a5f]/50 text-xs font-mono transition cursor-pointer">
+          <button onclick="clearAllArtifacts()" class="self-start sm:self-auto px-3 py-1.5 rounded bg-[#0E0C0D] hover:bg-[#A9295D] text-[#B89898] hover:text-[#FFFFFF] border border-[#7A4A65] hover:border-[#A9295D] text-xs font-mono transition cursor-pointer">
             PURGE LOCKER
           </button>
         </div>
@@ -402,7 +437,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-[#1f261e] bg-[#090b09] text-[11px] font-mono uppercase text-zinc-400">
+              <tr class="border-b border-[#7A4A65]/50 bg-[#0E0C0D] text-[11px] font-mono uppercase text-[#B89898]">
                 <th class="py-3 px-4">Artifact Filename</th>
                 <th class="py-3 px-4">Telemetry Type</th>
                 <th class="py-3 px-4">SHA-256 Hash Preview</th>
@@ -411,7 +446,7 @@
                 <th class="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody id="evidence-table-body" class="divide-y divide-[#181f17] text-sm">
+            <tbody id="evidence-table-body" class="divide-y divide-[#7A4A65]/30 text-sm">
               <!-- Populated dynamically via JS -->
             </tbody>
           </table>
@@ -424,20 +459,20 @@
     <!-- ===================================================================== -->
     <section id="view-triage" class="hidden space-y-6">
       <!-- Top Header -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#1f261e] pb-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#7A4A65]/50 pb-4">
         <div>
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#BC6382] uppercase tracking-widest mb-1">
             <span>STAGE 02 // THREAT CORRELATION & ENRICHMENT</span>
           </div>
-          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
-            TRIAGE // <span class="text-[#95D600]">IOC & TIMELINE MATRIX</span>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-[#FFFFFF] uppercase tracking-wide">
+            TRIAGE // <span class="text-[#00AFEF] neon-text-glow">IOC & TIMELINE MATRIX</span>
           </h1>
-          <p class="text-sm text-zinc-400 mt-1">
+          <p class="text-sm text-[#E0E9EC]/80 mt-1">
             Validate extracted Indicators of Compromise, map MITRE ATT&CK techniques, and curate chronological attack events before compiling the executive dossier.
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="switchView('report')" class="px-5 py-3 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_18px_rgba(149,214,0,0.4)] transition cursor-pointer">
+          <button onclick="switchView('report')" class="px-5 py-3 rounded-lg bg-[#00AFEF] hover:bg-[#3192BB] text-[#FFFFFF] font-display font-bold text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(0,175,239,0.45)] border border-[#E0E9EC]/30 transition cursor-pointer">
             COMPILE IR DOSSIER →
           </button>
         </div>
@@ -446,42 +481,42 @@
       <!-- High-Voltage KPI Telemetry Strip -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="claw-card rounded-xl p-4">
-          <div class="text-[11px] font-mono text-zinc-400 uppercase">EXTRACTED IOCS</div>
-          <div id="kpi-iocs" class="font-display font-bold text-3xl text-[#95D600] mt-1">8</div>
-          <div class="text-[11px] font-mono text-zinc-500 mt-1">IPs, Hashes, C2 Domains</div>
+          <div class="text-[11px] font-mono text-[#B89898] uppercase">EXTRACTED IOCS</div>
+          <div id="kpi-iocs" class="font-display font-bold text-3xl text-[#00AFEF] mt-1">8</div>
+          <div class="text-[11px] font-mono text-[#B89898]/80 mt-1">IPs, Hashes, C2 Domains</div>
         </div>
         <div class="claw-card rounded-xl p-4">
-          <div class="text-[11px] font-mono text-zinc-400 uppercase">TIMELINE EVENTS</div>
-          <div id="kpi-events" class="font-display font-bold text-3xl text-white mt-1">6 / 6</div>
-          <div class="text-[11px] font-mono text-zinc-500 mt-1">Included in Final Report</div>
+          <div class="text-[11px] font-mono text-[#B89898] uppercase">TIMELINE EVENTS</div>
+          <div id="kpi-events" class="font-display font-bold text-3xl text-[#FFFFFF] mt-1">6 / 6</div>
+          <div class="text-[11px] font-mono text-[#B89898]/80 mt-1">Included in Final Report</div>
         </div>
         <div class="claw-card rounded-xl p-4">
-          <div class="text-[11px] font-mono text-zinc-400 uppercase">MITRE TECHNIQUES</div>
-          <div id="kpi-mitre" class="font-display font-bold text-3xl text-[#39FF14] mt-1">5</div>
-          <div class="text-[11px] font-mono text-zinc-500 mt-1">ATT&CK v15 Mapped</div>
+          <div class="text-[11px] font-mono text-[#B89898] uppercase">MITRE TECHNIQUES</div>
+          <div id="kpi-mitre" class="font-display font-bold text-3xl text-[#BC6382] mt-1">5</div>
+          <div class="text-[11px] font-mono text-[#B89898]/80 mt-1">ATT&CK v15 Mapped</div>
         </div>
         <div class="claw-card rounded-xl p-4">
-          <div class="text-[11px] font-mono text-zinc-400 uppercase">PEAK SEVERITY</div>
-          <div id="kpi-severity" class="font-display font-bold text-2xl sm:text-3xl text-[#ff2a5f] mt-1">BEAST-TIER</div>
-          <div class="text-[11px] font-mono text-zinc-500 mt-1">Active Ransomware Staging</div>
+          <div class="text-[11px] font-mono text-[#B89898] uppercase">PEAK SEVERITY</div>
+          <div id="kpi-severity" class="font-display font-bold text-2xl sm:text-3xl text-[#A9295D] punch-text-glow mt-1">BEAST-TIER</div>
+          <div class="text-[11px] font-mono text-[#B89898]/80 mt-1">Active Ransomware Staging</div>
         </div>
       </div>
 
       <!-- Extracted IOCs Section -->
       <div class="claw-card rounded-xl overflow-hidden">
-        <div class="px-5 py-4 border-b border-[#1f261e] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0d100d]">
+        <div class="px-5 py-4 border-b border-[#7A4A65]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#7A4A65]/15">
           <div>
-            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+            <h2 class="font-display font-bold text-lg text-[#FFFFFF] uppercase tracking-wide">
               EXTRACTED INDICATORS OF COMPROMISE (IOCs)
             </h2>
-            <p class="text-xs text-zinc-400 font-mono">Click any indicator to copy defanged/raw value or toggle report inclusion</p>
+            <p class="text-xs text-[#B89898] font-mono">Click any indicator to copy defanged/raw value or toggle report inclusion</p>
           </div>
           <!-- Filter Pills -->
           <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-            <button onclick="setIocFilter('ALL')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#95D600] text-black font-bold cursor-pointer" data-filter="ALL">ALL</button>
-            <button onclick="setIocFilter('IP')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="IP">IPs</button>
-            <button onclick="setIocFilter('DOMAIN')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="DOMAIN">DOMAINS</button>
-            <button onclick="setIocFilter('HASH')" class="ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 cursor-pointer" data-filter="HASH">HASHES</button>
+            <button onclick="setIocFilter('ALL')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#00AFEF] text-[#FFFFFF] font-bold cursor-pointer" data-filter="ALL">ALL</button>
+            <button onclick="setIocFilter('IP')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#0E0C0D] text-[#E0E9EC] border border-[#7A4A65] cursor-pointer" data-filter="IP">IPs</button>
+            <button onclick="setIocFilter('DOMAIN')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#0E0C0D] text-[#E0E9EC] border border-[#7A4A65] cursor-pointer" data-filter="DOMAIN">DOMAINS</button>
+            <button onclick="setIocFilter('HASH')" class="ioc-filter-btn px-2.5 py-1 rounded bg-[#0E0C0D] text-[#E0E9EC] border border-[#7A4A65] cursor-pointer" data-filter="HASH">HASHES</button>
           </div>
         </div>
 
@@ -492,19 +527,19 @@
 
       <!-- Interactive Attack Timeline Matrix -->
       <div class="claw-card rounded-xl p-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1f261e] pb-4 mb-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#7A4A65]/50 pb-4 mb-5">
           <div>
-            <h2 class="font-display font-bold text-lg text-white uppercase tracking-wide">
+            <h2 class="font-display font-bold text-lg text-[#FFFFFF] uppercase tracking-wide">
               CHRONOLOGICAL ATTACK TIMELINE & ANALYST NOTES
             </h2>
-            <p class="text-xs text-zinc-400 font-mono">Toggle inclusion checkboxes, adjust severity levels, or edit analyst commentary live</p>
+            <p class="text-xs text-[#B89898] font-mono">Toggle inclusion checkboxes, adjust severity levels, or edit analyst commentary live</p>
           </div>
-          <button onclick="addCustomTimelineEvent()" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-[#162114] hover:bg-[#1f2e1c] text-[#95D600] border border-[#95D600]/40 text-xs font-mono font-bold uppercase cursor-pointer">
+          <button onclick="addCustomTimelineEvent()" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-[#3192BB]/25 hover:bg-[#00AFEF] text-[#FFFFFF] border border-[#00AFEF]/60 text-xs font-mono font-bold uppercase cursor-pointer transition">
             + ADD TIMELINE EVENT
           </button>
         </div>
 
-        <div id="timeline-container" class="space-y-4 relative before:content-[''] before:absolute before:left-4 sm:before:left-6 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#233021]">
+        <div id="timeline-container" class="space-y-4 relative before:content-[''] before:absolute before:left-4 sm:before:left-6 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-[#00AFEF] before:via-[#BC6382] before:to-[#A9295D]">
           <!-- Populated dynamically via JS -->
         </div>
       </div>
@@ -515,28 +550,28 @@
     <!-- ===================================================================== -->
     <section id="view-report" class="hidden space-y-6">
       <!-- Action Bar (Hidden when printing) -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1f261e] pb-4 no-print">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#7A4A65]/50 pb-4 no-print">
         <div>
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#95D600] uppercase tracking-widest mb-1">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-[#BC6382] uppercase tracking-widest mb-1">
             <span>STAGE 03 // FINAL DELIVERABLE</span>
           </div>
-          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide">
-            REPORT // <span class="text-[#95D600]">EXECUTIVE IR DOSSIER</span>
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-[#FFFFFF] uppercase tracking-wide">
+            REPORT // <span class="text-[#00AFEF] neon-text-glow">EXECUTIVE IR DOSSIER</span>
           </h1>
-          <p class="text-sm text-zinc-400 mt-1">
-            Dynamically synthesized from your triaged artifacts, IOCs, and attack timeline. Ready for executive briefing, Markdown export, or PDF print.
+          <p class="text-sm text-[#E0E9EC]/80 mt-1">
+            Dynamically synthesized from your triaged artifacts, IOCs, and attack timeline. Crisp light-surface dossier ready for executive briefing, Markdown export, or PDF print.
           </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
-          <button onclick="copyReportMarkdown()" class="px-4 py-2.5 rounded-lg bg-[#151d14] hover:bg-[#1e2b1c] text-[#95D600] border border-[#95D600]/50 font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 transition cursor-pointer">
+          <button onclick="copyReportMarkdown()" class="px-4 py-2.5 rounded-lg bg-[#7A4A65]/35 hover:bg-[#BC6382] text-[#FFFFFF] border border-[#BC6382] font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 transition cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
             </svg>
             COPY MARKDOWN
           </button>
 
-          <button onclick="window.print()" class="px-5 py-2.5 rounded-lg bg-[#95D600] hover:bg-[#a6eb07] text-black font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(149,214,0,0.4)] transition cursor-pointer">
+          <button onclick="window.print()" class="px-5 py-2.5 rounded-lg bg-[#00AFEF] hover:bg-[#3192BB] text-[#FFFFFF] font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(0,175,239,0.45)] border border-[#E0E9EC]/30 transition cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
@@ -545,46 +580,46 @@
         </div>
       </div>
 
-      <!-- Formal Dossier Sheet -->
-      <article class="claw-card print-paper rounded-2xl p-6 sm:p-10 space-y-8 bg-[#0b0d0b]">
+      <!-- Formal Dossier Sheet (Crisp #FFFFFF / #E0E9EC Surface with #0E0C0D & #7A4A65 Typography) -->
+      <article class="print-paper rounded-2xl p-6 sm:p-10 space-y-8 bg-[#FFFFFF] text-[#0E0C0D] border-2 border-[#00AFEF] shadow-[0_0_40px_rgba(0,175,239,0.2)]">
         <!-- Dossier Header Banner -->
-        <div class="border-b-2 border-[#95D600] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="border-b-2 border-[#A9295D] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2 text-xs font-mono text-[#95D600] font-bold uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-xs font-mono text-[#A9295D] font-bold uppercase tracking-widest">
               <span>TLP:AMBER+STRICT // CONFIDENTIAL IR BRIEFING</span>
             </div>
-            <h2 class="font-display font-bold text-2xl sm:text-4xl text-white uppercase tracking-wide mt-1">
+            <h2 class="font-display font-bold text-2xl sm:text-4xl text-[#0E0C0D] uppercase tracking-wide mt-1">
               INCIDENT RESPONSE DOSSIER
             </h2>
-            <p class="text-xs font-mono text-zinc-400 mt-1">
+            <p class="text-xs font-mono text-[#7A4A65] font-semibold mt-1">
               GENERATED BY MONSTER // IR-OPS BEAST-MODE ENGINE
             </p>
           </div>
-          <div class="text-left sm:text-right font-mono text-xs space-y-1">
-            <div class="inline-block px-3 py-1 rounded bg-[#ff2a5f]/15 text-[#ff2a5f] border border-[#ff2a5f]/40 font-bold print-badge">
+          <div class="text-left sm:text-right font-mono text-xs space-y-1.5">
+            <div class="inline-block px-3 py-1 rounded bg-[#A9295D] text-[#FFFFFF] border border-[#7A4A65] font-bold print-badge">
               SEVERITY: BEAST-TIER (CRITICAL)
             </div>
-            <div id="report-timestamp" class="text-zinc-400">GENERATED: 2026-11-12 18:32 EST</div>
+            <div id="report-timestamp" class="text-[#7A4A65] font-semibold">GENERATED: 2026-11-12 18:32 EST</div>
           </div>
         </div>
 
         <!-- Editable Incident Metadata Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-[#080a08] p-4 rounded-xl border border-[#1f261e]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-[#E0E9EC] p-4 rounded-xl border border-[#3192BB]/50">
           <div>
-            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">INCIDENT CASE ID</label>
-            <input id="meta-incident-id" type="text" value="IR-2026-0894-BEAST" oninput="syncIncidentBadge(this.value)" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#95D600] focus:outline-none focus:border-[#95D600]" />
+            <label class="block text-[10px] font-mono text-[#7A4A65] font-bold uppercase mb-1">INCIDENT CASE ID</label>
+            <input id="meta-incident-id" type="text" value="IR-2026-0894-BEAST" oninput="syncIncidentBadge(this.value)" class="w-full bg-[#FFFFFF] border border-[#3192BB] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#00AFEF] focus:outline-none focus:border-[#A9295D]" />
           </div>
           <div>
-            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">LEAD IR RESPONDER</label>
-            <input id="meta-lead" type="text" value="K. Vance (Principal Threat Hunter)" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#95D600]" />
+            <label class="block text-[10px] font-mono text-[#7A4A65] font-bold uppercase mb-1">LEAD IR RESPONDER</label>
+            <input id="meta-lead" type="text" value="K. Vance (Principal Threat Hunter)" class="w-full bg-[#FFFFFF] border border-[#3192BB] rounded px-2.5 py-1.5 text-xs font-mono font-semibold text-[#0E0C0D] focus:outline-none focus:border-[#A9295D]" />
           </div>
           <div>
-            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">THREAT ACTOR / CLUSTER</label>
-            <input id="meta-actor" type="text" value="UNC-7741 // VENOMLOCK" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#95D600]" />
+            <label class="block text-[10px] font-mono text-[#7A4A65] font-bold uppercase mb-1">THREAT ACTOR / CLUSTER</label>
+            <input id="meta-actor" type="text" value="UNC-7741 // VENOMLOCK" class="w-full bg-[#FFFFFF] border border-[#3192BB] rounded px-2.5 py-1.5 text-xs font-mono font-semibold text-[#0E0C0D] focus:outline-none focus:border-[#A9295D]" />
           </div>
           <div>
-            <label class="block text-[10px] font-mono text-zinc-400 uppercase mb-1">CONTAINMENT STATUS</label>
-            <select id="meta-status" class="w-full bg-[#0e120e] border border-[#253023] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#39FF14] focus:outline-none focus:border-[#95D600]">
+            <label class="block text-[10px] font-mono text-[#7A4A65] font-bold uppercase mb-1">CONTAINMENT STATUS</label>
+            <select id="meta-status" class="w-full bg-[#FFFFFF] border border-[#3192BB] rounded px-2.5 py-1.5 text-xs font-mono font-bold text-[#A9295D] focus:outline-none focus:border-[#00AFEF]">
               <option value="CONTAINED // ERADICATION IN PROGRESS">CONTAINED // ERADICATION ACTIVE</option>
               <option value="ACTIVE INTRUSION // ISOLATING HOSTS">ACTIVE INTRUSION // ISOLATING</option>
               <option value="ERADICATED // RECOVERY MONITORING">ERADICATED // MONITORING</option>
@@ -595,30 +630,30 @@
         <!-- 1. Executive Summary -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+            <h3 class="font-display font-bold text-lg text-[#3192BB] uppercase tracking-wider">
               01. EXECUTIVE SUMMARY
             </h3>
-            <span class="text-[11px] font-mono text-zinc-500 no-print">CLICK TEXT TO EDIT</span>
+            <span class="text-[11px] font-mono text-[#7A4A65] no-print">CLICK TEXT TO EDIT</span>
           </div>
-          <textarea id="report-exec-summary" rows="4" class="w-full bg-[#080a08] border border-[#1f261e] focus:border-[#95D600] rounded-xl p-4 text-sm text-zinc-200 leading-relaxed focus:outline-none">On November 12, 2026, MONSTER // IR-OPS telemetry detected a multi-stage ransomware intrusion (Operation VenomLock) originating from a spear-phishing attachment delivered to Finance Workstation FIN-WKS-042. The adversary executed an obfuscated PowerShell downloader, established encrypted Command-and-Control (C2) communications with 185.220.101.44, dumped LSASS credentials, and attempted Volume Shadow Copy deletion via vssadmin.exe prior to EDR host isolation.</textarea>
+          <textarea id="report-exec-summary" rows="4" class="w-full bg-[#E0E9EC]/65 border border-[#3192BB]/50 focus:border-[#00AFEF] rounded-xl p-4 text-sm text-[#0E0C0D] leading-relaxed focus:outline-none">On November 12, 2026, MONSTER // IR-OPS telemetry detected a multi-stage ransomware intrusion (Operation VenomLock) originating from a spear-phishing attachment delivered to Finance Workstation FIN-WKS-042. The adversary executed an obfuscated PowerShell downloader, established encrypted Command-and-Control (C2) communications with 185.220.101.44, dumped LSASS credentials, and attempted Volume Shadow Copy deletion via vssadmin.exe prior to EDR host isolation.</textarea>
         </div>
 
         <!-- 2. Scope & Evidence Inventory -->
         <div class="space-y-3">
-          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+          <h3 class="font-display font-bold text-lg text-[#3192BB] uppercase tracking-wider">
             02. FORENSIC EVIDENCE INVENTORY
           </h3>
-          <div class="overflow-x-auto border border-[#1f261e] rounded-xl">
+          <div class="overflow-x-auto border border-[#7A4A65]/40 rounded-xl">
             <table class="w-full text-left border-collapse text-xs font-mono">
               <thead>
-                <tr class="bg-[#080a08] border-b border-[#1f261e] text-zinc-400">
+                <tr class="bg-[#E0E9EC] border-b border-[#7A4A65]/40 text-[#7A4A65]">
                   <th class="py-2.5 px-3">Artifact</th>
                   <th class="py-2.5 px-3">Type</th>
                   <th class="py-2.5 px-3">SHA-256 Digest</th>
                   <th class="py-2.5 px-3">Classification</th>
                 </tr>
               </thead>
-              <tbody id="report-evidence-tbody" class="divide-y divide-[#181f17] text-zinc-300">
+              <tbody id="report-evidence-tbody" class="divide-y divide-[#E0E9EC] text-[#0E0C0D]">
                 <!-- Populated dynamically -->
               </tbody>
             </table>
@@ -627,20 +662,20 @@
 
         <!-- 3. Verified Indicators of Compromise -->
         <div class="space-y-3">
-          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+          <h3 class="font-display font-bold text-lg text-[#3192BB] uppercase tracking-wider">
             03. VERIFIED INDICATORS OF COMPROMISE (IOCs)
           </h3>
-          <div class="overflow-x-auto border border-[#1f261e] rounded-xl">
+          <div class="overflow-x-auto border border-[#7A4A65]/40 rounded-xl">
             <table class="w-full text-left border-collapse text-xs font-mono">
               <thead>
-                <tr class="bg-[#080a08] border-b border-[#1f261e] text-zinc-400">
+                <tr class="bg-[#E0E9EC] border-b border-[#7A4A65]/40 text-[#7A4A65]">
                   <th class="py-2.5 px-3">Type</th>
                   <th class="py-2.5 px-3">Indicator Value</th>
                   <th class="py-2.5 px-3">MITRE ATT&CK</th>
                   <th class="py-2.5 px-3">Context / Threat Intel</th>
                 </tr>
               </thead>
-              <tbody id="report-ioc-tbody" class="divide-y divide-[#181f17] text-zinc-300">
+              <tbody id="report-ioc-tbody" class="divide-y divide-[#E0E9EC] text-[#0E0C0D]">
                 <!-- Populated dynamically -->
               </tbody>
             </table>
@@ -649,7 +684,7 @@
 
         <!-- 4. Reconstructed Attack Timeline -->
         <div class="space-y-3">
-          <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+          <h3 class="font-display font-bold text-lg text-[#3192BB] uppercase tracking-wider">
             04. RECONSTRUCTED ATTACK TIMELINE
           </h3>
           <div id="report-timeline-list" class="space-y-2.5">
@@ -660,10 +695,10 @@
         <!-- 5. Containment & Remediation Checklist -->
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="font-display font-bold text-lg text-[#95D600] uppercase tracking-wider">
+            <h3 class="font-display font-bold text-lg text-[#3192BB] uppercase tracking-wider">
               05. CONTAINMENT & REMEDIATION ACTION PLAN
             </h3>
-            <span id="remediation-progress-label" class="text-xs font-mono text-[#95D600]">3 / 5 COMPLETED</span>
+            <span id="remediation-progress-label" class="text-xs font-mono font-bold text-[#A9295D]">3 / 5 COMPLETED</span>
           </div>
           <div id="remediation-list" class="space-y-2">
             <!-- Populated dynamically -->
@@ -675,8 +710,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-[#1c241b] bg-[#060706] py-4 px-6 text-center text-xs font-mono text-zinc-500 no-print">
-    MONSTER // IR-OPS — HIGH-VOLTAGE THREAT TRIAGE & REPORT SYNTHESIS ENGINE // UNLEASH THE RESPONSE
+  <footer class="border-t border-[#7A4A65]/50 bg-[#0E0C0D] py-4 px-6 text-center text-xs font-mono text-[#B89898] no-print">
+    MONSTER // IR-OPS — PIPELINE PUNCH & ULTRA ROSA THREAT TRIAGE ENGINE // UNLEASH THE RESPONSE
   </footer>
 
   <!-- ======================================================================= -->
@@ -931,15 +966,15 @@
           h = Math.imul(h, 0x01000193);
         }
         return (h >>> 0).toString(16).padStart(64, 'a');
-      }
-    }
-
-    function showToast(message, type = 'neon') {
+      }}
+    function showToast(message, type = 'cyan') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      const borderClass = type === 'danger' ? 'border-[#ff2a5f] text-[#ff2a5f]' : 'border-[#95D600] text-[#95D600]';
-      toast.className = `pointer-events-auto bg-[#0b0e0b]/95 backdrop-blur-md border ${borderClass} px-4 py-2.5 rounded-lg shadow-2xl font-mono text-xs flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0`;
-      toast.innerHTML = `<span class="w-2 h-2 rounded-full ${type === 'danger' ? 'bg-[#ff2a5f]' : 'bg-[#39FF14]'}"></span><span>${message}</span>`;
+      const borderClass = type === 'danger'
+        ? 'border-[#A9295D] text-[#BC6382]'
+        : 'border-[#00AFEF] text-[#E0E9EC]';
+      toast.className = `pointer-events-auto bg-[#0E0C0D]/95 backdrop-blur-md border ${borderClass} px-4 py-2.5 rounded-lg shadow-2xl font-mono text-xs flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0`;
+      toast.innerHTML = `<span class="w-2 h-2 rounded-full ${type === 'danger' ? 'bg-[#A9295D]' : 'bg-[#00AFEF]'}"></span><span>${message}</span>`;
       container.appendChild(toast);
 
       requestAnimationFrame(() => {
@@ -967,10 +1002,10 @@
         const tab = document.getElementById(`tab-${v}`);
         if (v === viewName) {
           section.classList.remove('hidden');
-          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#95D600] text-black border-[#95D600] shadow-[0_0_16px_rgba(149,214,0,0.4)]';
+          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#00AFEF] text-[#FFFFFF] border-[#E0E9EC]/50 shadow-[0_0_18px_rgba(0,175,239,0.5)]';
         } else {
           section.classList.add('hidden');
-          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#0e120e] text-zinc-300 border-[#222b20] hover:border-[#95D600]/60 hover:text-white';
+          tab.className = 'nav-tab flex-1 lg:flex-initial px-3.5 py-2.5 rounded-lg font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition cursor-pointer border bg-[#0E0C0D] text-[#E0E9EC] border-[#7A4A65]/70 hover:border-[#00AFEF] hover:text-[#FFFFFF]';
         }
       });
 
@@ -1050,7 +1085,7 @@
 
       appState.artifacts.unshift(newArtifact);
       renderIngestView();
-      appendTerminalLog(`<span class="text-[#95D600]">[INGEST]</span> Added <span class="text-white">${filename}</span> (${type}) — SHA256: ${hash.slice(0, 12)}...`);
+      appendTerminalLog(`<span class="text-[#00AFEF]">[INGEST]</span> Added <span class="text-[#FFFFFF]">${filename}</span> (${type}) — SHA256: ${hash.slice(0, 12)}...`);
       showToast(`Artifact "${filename}" locked & hashed.`);
     }
 
@@ -1092,14 +1127,14 @@
     const dropZone = document.getElementById('drop-zone');
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      dropZone.classList.add('border-[#95D600]', 'bg-[#121a11]');
+      dropZone.classList.add('border-[#00AFEF]', 'bg-[#3192BB]/15');
     });
     dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('border-[#95D600]', 'bg-[#121a11]');
+      dropZone.classList.remove('border-[#00AFEF]', 'bg-[#3192BB]/15');
     });
     dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
-      dropZone.classList.remove('border-[#95D600]', 'bg-[#121a11]');
+      dropZone.classList.remove('border-[#00AFEF]', 'bg-[#3192BB]/15');
       const files = Array.from(e.dataTransfer.files || []);
       files.forEach(file => {
         const reader = new FileReader();
@@ -1121,7 +1156,7 @@
     function clearAllArtifacts() {
       appState.artifacts = [];
       renderIngestView();
-      appendTerminalLog(`<span class="text-[#ff2a5f]">[PURGE]</span> Evidence Locker cleared by analyst.`);
+      appendTerminalLog(`<span class="text-[#A9295D]">[PURGE]</span> Evidence Locker cleared by analyst.`);
       showToast('Evidence Locker purged.', 'danger');
     }
 
@@ -1142,16 +1177,16 @@
       btn.disabled = true;
       btn.classList.add('opacity-60');
       pill.textContent = 'OVERDRIVE // PARSING';
-      pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#39FF14]/20 text-[#39FF14] border border-[#39FF14] animate-pulse';
+      pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#A9295D]/30 text-[#BC6382] border border-[#BC6382] animate-pulse';
 
       bar.style.width = '12%';
       pct.textContent = '12%';
-      appendTerminalLog(`<span class="text-[#39FF14]">[EXEC]</span> Unleashing Beast-Mode Regex & Behavioral Parser on ${appState.artifacts.length} artifacts...`);
+      appendTerminalLog(`<span class="text-[#BC6382]">[EXEC]</span> Unleashing Beast-Mode Regex & Behavioral Parser on ${appState.artifacts.length} artifacts...`);
 
       setTimeout(() => {
         bar.style.width = '54%';
         pct.textContent = '54%';
-        appendTerminalLog(`<span class="text-zinc-400">[SCAN]</span> Extracting IPv4s, C2 domains, SHA-256 digests, and MITRE ATT&CK signatures...`);
+        appendTerminalLog(`<span class="text-[#B89898]">[SCAN]</span> Extracting IPv4s, C2 domains, SHA-256 digests, and MITRE ATT&CK signatures...`);
       }, 320);
 
       setTimeout(() => {
@@ -1160,7 +1195,6 @@
 
         appState.artifacts.forEach(art => {
           if (art.status !== 'PARSED') {
-            // Merge preset IOCs if sample, otherwise run regex extractor
             const candidates = art.presetIocs || extractIocsFromText(art.rawSnippet, art.filename);
             candidates.forEach(c => {
               const exists = appState.iocs.some(existing => existing.value.toLowerCase() === c.value.toLowerCase());
@@ -1205,13 +1239,13 @@
         bar.style.width = '100%';
         pct.textContent = '100%';
         pill.textContent = 'COMPLETE // SYNCED';
-        pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30';
+        pill.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-[#00AFEF]/20 text-[#00AFEF] border border-[#00AFEF]/50';
 
         btn.disabled = false;
         btn.classList.remove('opacity-60');
 
         renderIngestView();
-        appendTerminalLog(`<span class="text-[#95D600]">[DONE]</span> Synthesis complete! +${addedIocCount} new IOCs, +${addedEventCount} timeline events pushed to Triage Matrix.`);
+        appendTerminalLog(`<span class="text-[#00AFEF]">[DONE]</span> Synthesis complete! +${addedIocCount} new IOCs, +${addedEventCount} timeline events pushed to Triage Matrix.`);
         showToast(`Parser Unleashed! ${appState.iocs.length} total IOCs ready in Triage.`);
       }, 750);
     }
@@ -1219,15 +1253,27 @@
     // -------------------------------------------------------------------------
     // 5. RENDERING FUNCTIONS FOR ALL 3 VIEWS
     // -------------------------------------------------------------------------
-    function getSeverityBadgeHTML(sev) {
-      const map = {
-        'BEAST-TIER': 'bg-[#ff2a5f]/20 text-[#ff2a5f] border-[#ff2a5f]/50',
-        'CRITICAL': 'bg-[#ffb800]/20 text-[#ffb800] border-[#ffb800]/50',
-        'HIGH': 'bg-orange-500/20 text-orange-400 border-orange-500/40',
-        'ELEVATED': 'bg-[#95D600]/15 text-[#95D600] border-[#95D600]/40',
-        'LOW': 'bg-zinc-800 text-zinc-300 border-zinc-600'
+    function getSeverityBadgeHTML(sev, lightSurface = false) {
+      if (lightSurface) {
+        const lightMap = {
+          'BEAST-TIER': 'bg-[#A9295D] text-[#FFFFFF] border-[#7A4A65]',
+          'CRITICAL': 'bg-[#BC6382] text-[#FFFFFF] border-[#A9295D]',
+          'HIGH': 'bg-[#7A4A65] text-[#FFFFFF] border-[#0E0C0D]',
+          'ELEVATED': 'bg-[#00AFEF] text-[#FFFFFF] border-[#3192BB]',
+          'LOW': 'bg-[#E0E9EC] text-[#0E0C0D] border-[#3192BB]'
+        };
+        const cls = lightMap[sev] || lightMap['ELEVATED'];
+        return `<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border uppercase print-badge ${cls}">${sev}</span>`;
+      }
+
+      const darkMap = {
+        'BEAST-TIER': 'bg-[#A9295D]/35 text-[#FFFFFF] border-[#A9295D]',
+        'CRITICAL': 'bg-[#BC6382]/25 text-[#BC6382] border-[#BC6382]/70',
+        'HIGH': 'bg-[#7A4A65]/40 text-[#E0E9EC] border-[#B89898]/60',
+        'ELEVATED': 'bg-[#00AFEF]/20 text-[#00AFEF] border-[#00AFEF]/60',
+        'LOW': 'bg-[#3192BB]/20 text-[#E0E9EC] border-[#3192BB]/50'
       };
-      const cls = map[sev] || map['ELEVATED'];
+      const cls = darkMap[sev] || darkMap['ELEVATED'];
       return `<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border uppercase print-badge ${cls}">${sev}</span>`;
     }
 
@@ -1240,7 +1286,7 @@
       if (appState.artifacts.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="py-8 text-center font-mono text-xs text-zinc-500">
+            <td colspan="6" class="py-8 text-center font-mono text-xs text-[#B89898]">
               NO ARTIFACTS IN LOCKER — DROP FILES OR USE INSTANT SAMPLE INJECTORS ABOVE
             </td>
           </tr>`;
@@ -1248,25 +1294,25 @@
       }
 
       tbody.innerHTML = appState.artifacts.map(art => `
-        <tr class="hover:bg-[#111610] transition">
-          <td class="py-3.5 px-4 font-mono text-xs text-white font-semibold">
+        <tr class="hover:bg-[#7A4A65]/15 transition">
+          <td class="py-3.5 px-4 font-mono text-xs text-[#FFFFFF] font-semibold">
             <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#95D600]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00AFEF]"></span>
               <span>${escapeHtml(art.filename)}</span>
             </div>
           </td>
-          <td class="py-3.5 px-4 font-mono text-xs text-zinc-400">${escapeHtml(art.type)}</td>
-          <td class="py-3.5 px-4 font-mono text-xs text-zinc-500" title="${art.hash}">
+          <td class="py-3.5 px-4 font-mono text-xs text-[#B89898]">${escapeHtml(art.type)}</td>
+          <td class="py-3.5 px-4 font-mono text-xs text-[#B89898]/80" title="${art.hash}">
             ${art.hash.slice(0, 16)}...${art.hash.slice(-6)}
           </td>
-          <td class="py-3.5 px-4">${getSeverityBadgeHTML(art.severity)}</td>
+          <td class="py-3.5 px-4">${getSeverityBadgeHTML(art.severity, false)}</td>
           <td class="py-3.5 px-4 font-mono text-xs">
             ${art.status === 'PARSED'
-              ? '<span class="text-[#39FF14] font-bold">✓ PARSED</span>'
-              : '<span class="text-[#ffb800] animate-pulse">● QUEUED</span>'}
+              ? '<span class="text-[#00AFEF] font-bold">✓ PARSED</span>'
+              : '<span class="text-[#BC6382] animate-pulse font-bold">● QUEUED</span>'}
           </td>
           <td class="py-3.5 px-4 text-right">
-            <button onclick="removeArtifact('${art.id}')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-red-950/60 text-zinc-400 hover:text-[#ff2a5f] border border-zinc-800 text-xs font-mono transition cursor-pointer">
+            <button onclick="removeArtifact('${art.id}')" class="px-2.5 py-1 rounded bg-[#0E0C0D] hover:bg-[#A9295D] text-[#B89898] hover:text-[#FFFFFF] border border-[#7A4A65] text-xs font-mono transition cursor-pointer">
               REMOVE
             </button>
           </td>
@@ -1278,9 +1324,9 @@
       appState.iocFilter = filterType;
       document.querySelectorAll('.ioc-filter-btn').forEach(btn => {
         if (btn.dataset.filter === filterType) {
-          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-[#95D600] text-black font-bold cursor-pointer';
+          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-[#00AFEF] text-[#FFFFFF] font-bold cursor-pointer';
         } else {
-          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-[#95D600]/50 cursor-pointer';
+          btn.className = 'ioc-filter-btn px-2.5 py-1 rounded bg-[#0E0C0D] text-[#E0E9EC] border border-[#7A4A65] hover:border-[#00AFEF] cursor-pointer';
         }
       });
       renderTriageView();
@@ -1320,27 +1366,27 @@
 
       const iocGrid = document.getElementById('ioc-grid');
       iocGrid.innerHTML = filteredIocs.map(ioc => `
-        <div class="p-4 rounded-xl bg-[#090c09] border ${ioc.included ? 'border-[#253322]' : 'border-zinc-900 opacity-50'} flex flex-col justify-between gap-3 transition">
+        <div class="p-4 rounded-xl bg-[#0E0C0D] border ${ioc.included ? 'border-[#7A4A65]/70 hover:border-[#00AFEF]' : 'border-[#7A4A65]/25 opacity-50'} flex flex-col justify-between gap-3 transition">
           <div class="flex items-start justify-between gap-2">
             <div class="space-y-1 min-w-0">
               <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded bg-[#95D600]/15 text-[#95D600] border border-[#95D600]/30 font-mono text-[10px] font-bold">
+                <span class="px-2 py-0.5 rounded bg-[#3192BB]/25 text-[#00AFEF] border border-[#00AFEF]/50 font-mono text-[10px] font-bold">
                   ${ioc.type}
                 </span>
-                ${getSeverityBadgeHTML(ioc.severity)}
+                ${getSeverityBadgeHTML(ioc.severity, false)}
               </div>
-              <div onclick="copyTextToClipboard('${escapeHtml(ioc.value)}')" class="font-mono text-xs sm:text-sm text-white font-bold break-all hover:text-[#95D600] cursor-pointer pt-1" title="Click to copy indicator">
+              <div onclick="copyTextToClipboard('${escapeHtml(ioc.value)}')" class="font-mono text-xs sm:text-sm text-[#FFFFFF] font-bold break-all hover:text-[#00AFEF] cursor-pointer pt-1" title="Click to copy indicator">
                 ${escapeHtml(ioc.value)}
               </div>
             </div>
-            <label class="inline-flex items-center gap-1.5 cursor-pointer shrink-0 font-mono text-[11px] text-zinc-400">
-              <input type="checkbox" ${ioc.included ? 'checked' : ''} onchange="toggleIocInclusion('${ioc.id}')" class="accent-[#95D600] w-4 h-4 rounded cursor-pointer" />
+            <label class="inline-flex items-center gap-1.5 cursor-pointer shrink-0 font-mono text-[11px] text-[#B89898]">
+              <input type="checkbox" ${ioc.included ? 'checked' : ''} onchange="toggleIocInclusion('${ioc.id}')" class="accent-[#00AFEF] w-4 h-4 rounded cursor-pointer" />
               <span>REPORT</span>
             </label>
           </div>
-          <div class="border-t border-[#181f17] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-mono">
-            <span class="text-[#39FF14]">${escapeHtml(ioc.mitre)}</span>
-            <span class="text-zinc-400 truncate">${escapeHtml(ioc.context)}</span>
+          <div class="border-t border-[#7A4A65]/35 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-mono">
+            <span class="text-[#BC6382] font-semibold">${escapeHtml(ioc.mitre)}</span>
+            <span class="text-[#B89898] truncate">${escapeHtml(ioc.context)}</span>
           </div>
         </div>
       `).join('');
@@ -1350,28 +1396,28 @@
       timelineContainer.innerHTML = appState.timeline.map(evt => `
         <div class="relative pl-10 sm:pl-14">
           <!-- Timeline Node Dot -->
-          <div class="absolute left-2.5 sm:left-4.5 top-4 w-3.5 h-3.5 rounded-full ${evt.included ? 'bg-[#95D600] shadow-[0_0_10px_#95D600]' : 'bg-zinc-700'} border-2 border-[#050505]"></div>
+          <div class="absolute left-2.5 sm:left-4.5 top-4 w-3.5 h-3.5 rounded-full ${evt.included ? 'bg-[#00AFEF] shadow-[0_0_10px_#00AFEF]' : 'bg-[#7A4A65]'} border-2 border-[#0E0C0D]"></div>
 
-          <div class="p-4 rounded-xl bg-[#090c09] border ${evt.included ? 'border-[#222e1f]' : 'border-zinc-900 opacity-55'} space-y-2.5">
+          <div class="p-4 rounded-xl bg-[#0E0C0D] border ${evt.included ? 'border-[#7A4A65]/70' : 'border-[#7A4A65]/25 opacity-55'} space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex flex-wrap items-center gap-2">
-                <input type="checkbox" ${evt.included ? 'checked' : ''} onchange="toggleTimelineEvent('${evt.id}')" class="accent-[#95D600] w-4 h-4 cursor-pointer" title="Include in Executive Report" />
-                <span class="font-mono text-xs text-[#95D600] font-bold">${escapeHtml(evt.timestamp)}</span>
-                <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 font-mono text-[10px] text-zinc-300">${escapeHtml(evt.mitre)}</span>
+                <input type="checkbox" ${evt.included ? 'checked' : ''} onchange="toggleTimelineEvent('${evt.id}')" class="accent-[#00AFEF] w-4 h-4 cursor-pointer" title="Include in Executive Report" />
+                <span class="font-mono text-xs text-[#00AFEF] font-bold">${escapeHtml(evt.timestamp)}</span>
+                <span class="px-2 py-0.5 rounded bg-[#7A4A65]/30 border border-[#BC6382]/50 font-mono text-[10px] text-[#E0E9EC]">${escapeHtml(evt.mitre)}</span>
               </div>
 
-              <select onchange="updateTimelineSeverity('${evt.id}', this.value)" class="bg-[#0e120e] border border-[#253023] rounded px-2 py-1 text-[11px] font-mono font-bold text-white focus:outline-none focus:border-[#95D600]">
+              <select onchange="updateTimelineSeverity('${evt.id}', this.value)" class="bg-[#0E0C0D] border border-[#7A4A65] rounded px-2 py-1 text-[11px] font-mono font-bold text-[#FFFFFF] focus:outline-none focus:border-[#00AFEF]">
                 ${['LOW', 'ELEVATED', 'CRITICAL', 'BEAST-TIER'].map(level =>
                   `<option value="${level}" ${evt.severity === level ? 'selected' : ''}>${level}</option>`
                 ).join('')}
               </select>
             </div>
 
-            <div class="font-display font-bold text-base text-white">${escapeHtml(evt.title)}</div>
+            <div class="font-display font-bold text-base text-[#FFFFFF]">${escapeHtml(evt.title)}</div>
 
             <div>
-              <label class="block text-[10px] font-mono text-zinc-500 uppercase mb-1">ANALYST TRIAGE NOTE (SYNCED TO REPORT)</label>
-              <input type="text" value="${escapeHtml(evt.note)}" oninput="updateTimelineNote('${evt.id}', this.value)" class="w-full bg-[#060806] border border-[#1c241b] focus:border-[#95D600] rounded px-3 py-1.5 text-xs font-mono text-zinc-300 focus:outline-none" />
+              <label class="block text-[10px] font-mono text-[#B89898] uppercase mb-1">ANALYST TRIAGE NOTE (SYNCED TO REPORT)</label>
+              <input type="text" value="${escapeHtml(evt.note)}" oninput="updateTimelineNote('${evt.id}', this.value)" class="w-full bg-[#7A4A65]/15 border border-[#7A4A65]/60 focus:border-[#00AFEF] rounded px-3 py-1.5 text-xs font-mono text-[#E0E9EC] focus:outline-none" />
             </div>
           </div>
         </div>
@@ -1424,43 +1470,43 @@
       // Evidence Table
       const evTbody = document.getElementById('report-evidence-tbody');
       evTbody.innerHTML = appState.artifacts.map(art => `
-        <tr>
-          <td class="py-2.5 px-3 font-bold text-white">${escapeHtml(art.filename)}</td>
-          <td class="py-2.5 px-3">${escapeHtml(art.type)}</td>
-          <td class="py-2.5 px-3 text-zinc-400 break-all">${art.hash}</td>
-          <td class="py-2.5 px-3">${getSeverityBadgeHTML(art.severity)}</td>
+        <tr class="hover:bg-[#E0E9EC]/40">
+          <td class="py-2.5 px-3 font-bold text-[#0E0C0D]">${escapeHtml(art.filename)}</td>
+          <td class="py-2.5 px-3 text-[#7A4A65] font-semibold">${escapeHtml(art.type)}</td>
+          <td class="py-2.5 px-3 text-[#0E0C0D]/80 break-all">${art.hash}</td>
+          <td class="py-2.5 px-3">${getSeverityBadgeHTML(art.severity, true)}</td>
         </tr>
-      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-zinc-500">No artifacts attached.</td></tr>`;
+      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-[#7A4A65]">No artifacts attached.</td></tr>`;
 
       // Verified IOCs Table
       const includedIocs = appState.iocs.filter(i => i.included);
       const iocTbody = document.getElementById('report-ioc-tbody');
       iocTbody.innerHTML = includedIocs.map(ioc => `
-        <tr>
-          <td class="py-2.5 px-3 font-bold text-[#95D600]">${escapeHtml(ioc.type)}</td>
-          <td class="py-2.5 px-3 text-white break-all">${escapeHtml(ioc.value)}</td>
-          <td class="py-2.5 px-3">${escapeHtml(ioc.mitre)}</td>
-          <td class="py-2.5 px-3 text-zinc-400">${escapeHtml(ioc.context)}</td>
+        <tr class="hover:bg-[#E0E9EC]/40">
+          <td class="py-2.5 px-3 font-bold text-[#3192BB]">${escapeHtml(ioc.type)}</td>
+          <td class="py-2.5 px-3 font-bold text-[#0E0C0D] break-all">${escapeHtml(ioc.value)}</td>
+          <td class="py-2.5 px-3 text-[#A9295D] font-semibold">${escapeHtml(ioc.mitre)}</td>
+          <td class="py-2.5 px-3 text-[#0E0C0D]/80">${escapeHtml(ioc.context)}</td>
         </tr>
-      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-zinc-500">No IOCs selected for report.</td></tr>`;
+      `).join('') || `<tr><td colspan="4" class="py-3 px-3 text-[#7A4A65]">No IOCs selected for report.</td></tr>`;
 
       // Timeline List
       const includedEvents = appState.timeline.filter(e => e.included);
       const tlList = document.getElementById('report-timeline-list');
       tlList.innerHTML = includedEvents.map(evt => `
-        <div class="p-3.5 rounded-xl bg-[#080a08] border border-[#1f261e] flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+        <div class="p-3.5 rounded-xl bg-[#E0E9EC]/60 border border-[#3192BB]/40 flex flex-col sm:flex-row sm:items-start justify-between gap-2">
           <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span class="text-[#95D600] font-bold">${escapeHtml(evt.timestamp)}</span>
-              <span class="text-zinc-500">|</span>
-              <span class="text-zinc-300 font-bold">${escapeHtml(evt.mitre)}</span>
+              <span class="text-[#3192BB] font-bold">${escapeHtml(evt.timestamp)}</span>
+              <span class="text-[#7A4A65]">|</span>
+              <span class="text-[#A9295D] font-bold">${escapeHtml(evt.mitre)}</span>
             </div>
-            <div class="font-display font-bold text-sm text-white">${escapeHtml(evt.title)}</div>
-            <p class="text-xs text-zinc-400 font-mono">${escapeHtml(evt.note)}</p>
+            <div class="font-display font-bold text-sm text-[#0E0C0D]">${escapeHtml(evt.title)}</div>
+            <p class="text-xs text-[#0E0C0D]/85 font-mono">${escapeHtml(evt.note)}</p>
           </div>
-          <div class="shrink-0">${getSeverityBadgeHTML(evt.severity)}</div>
+          <div class="shrink-0">${getSeverityBadgeHTML(evt.severity, true)}</div>
         </div>
-      `).join('') || `<p class="text-xs font-mono text-zinc-500">No timeline events selected.</p>`;
+      `).join('') || `<p class="text-xs font-mono text-[#7A4A65]">No timeline events selected.</p>`;
 
       // Remediation Checklist
       renderRemediationList();
@@ -1472,9 +1518,9 @@
 
       const remList = document.getElementById('remediation-list');
       remList.innerHTML = appState.remediation.map(rem => `
-        <label class="flex items-center gap-3 p-3 rounded-xl bg-[#080a08] border border-[#1f261e] hover:border-[#95D600]/40 cursor-pointer transition">
-          <input type="checkbox" ${rem.done ? 'checked' : ''} onchange="toggleRemediation('${rem.id}')" class="accent-[#95D600] w-4 h-4 rounded cursor-pointer" />
-          <span class="text-xs sm:text-sm font-mono ${rem.done ? 'line-through text-zinc-500' : 'text-zinc-200'}">${escapeHtml(rem.text)}</span>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-[#E0E9EC]/55 border border-[#7A4A65]/35 hover:border-[#00AFEF] cursor-pointer transition">
+          <input type="checkbox" ${rem.done ? 'checked' : ''} onchange="toggleRemediation('${rem.id}')" class="accent-[#00AFEF] w-4 h-4 rounded cursor-pointer" />
+          <span class="text-xs sm:text-sm font-mono ${rem.done ? 'line-through text-[#7A4A65]' : 'text-[#0E0C0D] font-medium'}">${escapeHtml(rem.text)}</span>
         </label>
       `).join('');
     }
@@ -1529,7 +1575,7 @@
       renderIngestView();
       renderTriageView();
       renderReportView();
-      appendTerminalLog(`<span class="text-[#95D600]">[RESET]</span> Restored pre-loaded Operation VenomLock incident dataset.`);
+      appendTerminalLog(`<span class="text-[#00AFEF]">[RESET]</span> Restored pre-loaded Operation VenomLock incident dataset.`);
       showToast('Scenario reset to Operation VenomLock baseline.');
     }
 
