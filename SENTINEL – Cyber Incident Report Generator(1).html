@@ -299,7 +299,7 @@ async function generate(){
    fd.append('incident_title',title);fd.append('incident_type',type);fd.append('severity',sev);fd.append('start_time',start||'Unspecified');fd.append('end_time',end||'Ongoing');
    fd.append('detection_method',detect);fd.append('affected_systems',systems);fd.append('impact_summary',impact);fd.append('actions_taken',actions);fd.append('analyst_notes','');fd.append('target_model',model);
    S.files.forEach((it,i)=>fd.append(`log_file_${i}`,it.file||new Blob([it.content],{type:'text/plain'}),it.name));
-   const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),120000);
+   const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),180000);
    try{
     const res=await fetch(v('workerUrl'),{method:'POST',body:fd,signal:ctl.signal});
     clearTimeout(to);ms=Math.round(performance.now()-t0);
@@ -308,7 +308,7 @@ async function generate(){
     md=d.report||d.response||(typeof d==='string'?d:JSON.stringify(d,null,2));
    }catch(fe){
     clearTimeout(to);console.warn('Backend fetch failed or timed out. Initiating simulator fallback.',fe);
-    toast(fe.name==='AbortError'?'Worker took longer than 120s. Reverting to AI Simulator mode.':'Backend endpoint unreachable. Reverting to AI Simulator mode.','warning');
+    toast(fe.name==='AbortError'?'Worker took longer than 180s. Reverting to AI Simulator mode.':'Backend endpoint unreachable. Reverting to AI Simulator mode.','warning');
     await new Promise(r=>setTimeout(r,1200));ms=Math.round(performance.now()-t0);md=mockAi(payload);
    }
   }
