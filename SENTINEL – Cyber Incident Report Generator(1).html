@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SENTINEL – Cyber Incident Report Generator</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+@layer components{
+ .inp{@apply w-full bg-[#0E0C0D] border border-[#7A4A65]/50 focus:border-[#00AFEF] rounded-lg px-3 py-2 text-xs text-[#E0E9EC] placeholder-[#7A4A65] outline-none}
+ .card{@apply bg-[#0E0C0D]/90 border border-[#7A4A65]/50 rounded-2xl p-5 shadow-lg}
+ .lbl{@apply block text-xs font-semibold text-[#E0E9EC] mb-1}
+ .ttl{@apply text-xs font-bold text-[#FFFFFF] uppercase tracking-wider flex items-center gap-2}
+}
+</style>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:#0E0C0D}
+select option{background:#0E0C0D}
+i[data-lucide],svg.lucide{display:inline-block}
+</style>
+</head>
+<body class="min-h-screen bg-[#0E0C0D] text-[#E0E9EC] flex flex-col font-sans selection:bg-[#00AFEF] selection:text-[#0E0C0D] print:bg-[#FFFFFF] print:text-[#0E0C0D]">
+
+<div id="toast" class="hidden fixed top-4 right-4 z-50 items-center gap-3 px-4 py-3 rounded-lg shadow-2xl border backdrop-blur-md bg-[#0E0C0D]/90 text-sm font-medium print:hidden"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<header class="border-b border-[#7A4A65]/50 bg-[#0E0C0D]/80 backdrop-blur sticky top-0 z-40 print:hidden">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+  <div class="flex items-center gap-3">
+   <div class="p-2 rounded-xl bg-gradient-to-tr from-[#00AFEF] to-[#3192BB] text-[#FFFFFF] shadow-lg shadow-[#00AFEF]/20 ring-1 ring-[#00AFEF]/40"><i data-lucide="shield-alert" class="w-6 h-6"></i></div>
+   <div>
+    <div class="flex items-center gap-2">
+     <span class="font-mono font-black text-lg tracking-wider text-[#FFFFFF]">SENTINEL</span>
+     <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#3192BB]/20 text-[#00AFEF] border border-[#3192BB]/60 uppercase tracking-widest">Cloudflare Workers AI</span>
+    </div>
+    <p class="text-[11px] text-[#B89898] hidden sm:block">Incident Response Report &amp; Log Telemetry Synthesizer</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-3">
+   <button id="modeBtn" onclick="setSim(!S.sim)"><i data-lucide="cpu" class="w-3.5 h-3.5"></i><span id="modeTxt"></span></button>
+   <button onclick="modal('settingsModal',1)" class="p-2 rounded-lg bg-[#7A4A65]/80 hover:bg-[#7A4A65] text-[#E0E9EC] hover:text-[#FFFFFF] border border-[#7A4A65]/60 transition-colors flex items-center gap-2 text-xs font-medium"><i data-lucide="settings" class="w-4 h-4 text-[#00AFEF]"></i><span class="hidden sm:inline">Worker Config</span></button>
+   <div class="flex rounded-lg bg-[#0E0C0D] p-1 border border-[#7A4A65]/50">
+    <button id="tabGen" onclick="setTab('generator')">Generator</button>
+    <button id="tabHist" onclick="setTab('history')" class="flex items-center gap-1.5"><span>History</span><span id="histCount" class="hidden px-1.5 bg-[#0E0C0D] text-[#00AFEF] text-[10px] rounded-full font-mono font-bold"></span></button>
+   </div>
+  </div>
+ </div>
+</header>
+
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 print:p-0 print:max-w-none">
+
+ <div id="historyView" class="hidden space-y-4 print:hidden">
+  <div class="flex items-center justify-between border-b border-[#7A4A65]/50 pb-4">
+   <div>
+    <h2 class="text-xl font-bold text-[#FFFFFF] flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5 text-[#00AFEF]"></i>Generated Report Archives</h2>
+    <p class="text-xs text-[#B89898]">View and export past cyber incident reports stored in session memory.</p>
+   </div>
+   <button id="clearHist" onclick="clearHist()" class="hidden px-3 py-1.5 text-xs text-[#BC6382] bg-[#A9295D]/20 border border-[#A9295D]/60 rounded-md hover:bg-[#A9295D]/20 items-center gap-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Clear All Archives</button>
+  </div>
+  <div id="histBody"></div>
+ </div>
+
+ <div id="genView" class="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block">
+  <div class="lg:col-span-5 space-y-5 print:hidden">
+
+   <div class="bg-[#0E0C0D]/90 border border-[#7A4A65]/50 rounded-2xl p-4 shadow-lg backdrop-blur">
+    <div class="flex items-center justify-between mb-3">
+     <span class="text-xs font-bold text-[#E0E9EC] uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-[#00AFEF]"></i>Load Sample Templates</span>
+     <span class="text-[10px] text-[#B89898]">Instant Demo Data</span>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+     <button onclick="loadT('ransomware')" class="px-2.5 py-2 rounded-lg bg-[#A9295D]/10 hover:bg-[#A9295D]/20 border border-[#A9295D]/40 text-[#BC6382] text-xs font-medium text-left flex flex-col gap-0.5"><span class="font-bold">Ransomware</span><span class="text-[10px] text-[#B89898]">DC &amp; Network</span></button>
+     <button onclick="loadT('ddos')" class="px-2.5 py-2 rounded-lg bg-[#BC6382]/10 hover:bg-[#BC6382]/20 border border-[#BC6382]/40 text-[#B89898] text-xs font-medium text-left flex flex-col gap-0.5"><span class="font-bold">DDoS Attack</span><span class="text-[10px] text-[#B89898]">Layer 7 Surge</span></button>
+     <button onclick="loadT('databreach')" class="px-2.5 py-2 rounded-lg bg-[#3192BB]/10 hover:bg-[#3192BB]/20 border border-[#3192BB]/40 text-[#00AFEF] text-xs font-medium text-left flex flex-col gap-0.5"><span class="font-bold">Data Breach</span><span class="text-[10px] text-[#B89898]">AWS S3 Leak</span></button>
+    </div>
+   </div>
+
+   <div class="card space-y-4">
+    <div class="flex items-center justify-between border-b border-[#7A4A65]/50 pb-3">
+     <h2 class="text-sm font-bold text-[#FFFFFF] uppercase tracking-wider flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-[#00AFEF]"></i>Incident Details</h2>
+     <button onclick="resetForm()" class="text-[11px] text-[#B89898] hover:text-[#E0E9EC] flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3 h-3"></i>Reset</button>
+    </div>
+    <div><label class="lbl">Incident Title / Brief <span class="text-[#00AFEF]">*</span></label><input id="title" type="text" placeholder="e.g. Unauthorized Database Export via Compromised Admin Account" class="inp text-sm"></div>
+    <div class="grid grid-cols-2 gap-3">
+     <div><label class="lbl">Incident Type</label>
+      <select id="type" class="inp"><option>Ransomware / Malware</option><option>DDoS Attack</option><option>Data Exfiltration / Cloud Exposure</option><option>Phishing / Credential Harvesting</option><option>Unauthorized Access / Privilege Escalation</option><option>Supply Chain Compromise</option><option>API Abuse / Zero-Day Exploit</option></select></div>
+     <div><label class="lbl">Severity Level</label>
+      <select id="sev" onchange="paintSev()" class="inp font-bold"><option value="Critical">Critical (Sev 1)</option><option value="High" selected>High (Sev 2)</option><option value="Medium">Medium (Sev 3)</option><option value="Low">Low (Sev 4)</option></select></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+     <div><label class="lbl">Start Time (UTC)</label><input id="start" type="datetime-local" class="inp !px-2.5 !py-1.5"></div>
+     <div><label class="lbl">Containment Time</label><input id="end" type="datetime-local" class="inp !px-2.5 !py-1.5"></div>
+    </div>
+    <div><label class="lbl">Detection Method / Initial Vector</label><input id="detect" type="text" placeholder="e.g. Cloudflare WAF Automated Alert, EDR Host Beacon, SIEM Rule 402" class="inp"></div>
+    <div><label class="lbl">Affected Systems &amp; Assets</label><textarea id="systems" rows="2" placeholder="Hostnames, IP ranges, DB instances, or bucket names..." class="inp font-mono"></textarea></div>
+    <div><label class="lbl">Impact &amp; Scope Summary</label><textarea id="impact" rows="3" placeholder="Describe business downtime, data compromised, error spikes, user impact..." class="inp"></textarea></div>
+    <div><label class="lbl">Containment &amp; Remediation Actions Taken</label><textarea id="actions" rows="2" placeholder="List response steps taken (e.g. Revoked API key, isolated host, enabled WAF challenge)..." class="inp"></textarea></div>
+   </div>
+
+   <div class="card space-y-3">
+    <div class="flex items-center justify-between">
+     <label class="ttl"><i data-lucide="upload-cloud" class="w-4 h-4 text-[#00AFEF]"></i>Log &amp; Evidence Artifacts</label>
+     <span class="text-[10px] text-[#B89898]">.log, .txt, .json, .csv</span>
+    </div>
+    <div id="drop" class="border-2 border-dashed border-[#7A4A65]/50 hover:border-[#00AFEF]/60 bg-[#0E0C0D]/60 rounded-xl p-4 text-center cursor-pointer transition-all hover:bg-[#0E0C0D]/90 group">
+     <input id="fileIn" type="file" multiple class="hidden" accept=".log,.txt,.json,.csv,.xml">
+     <i data-lucide="upload-cloud" class="w-8 h-8 text-[#7A4A65] group-hover:text-[#00AFEF] mx-auto mb-2 transition-colors"></i>
+     <p class="text-xs font-medium text-[#E0E9EC]"><span class="text-[#00AFEF] underline decoration-[#00AFEF]/50">Click to upload</span> or drag and drop telemetry files</p>
+     <p class="text-[10px] text-[#B89898] mt-1">Files sent via FormData POST to backend worker endpoint</p>
+    </div>
+    <div id="fileList" class="space-y-2 pt-1"></div>
+   </div>
+
+   <button id="genBtn" onclick="generate()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#00AFEF] via-[#3192BB] to-[#A9295D] hover:from-[#00AFEF] hover:via-[#3192BB] hover:to-[#BC6382] text-[#FFFFFF] font-bold text-sm tracking-wide shadow-lg shadow-[#00AFEF]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 group"></button>
+  </div>
+
+  <div class="lg:col-span-7 flex flex-col h-full min-h-[500px] print:w-full print:block">
+   <div class="bg-[#0E0C0D]/90 border border-[#7A4A65]/50 rounded-2xl shadow-xl flex-1 flex flex-col overflow-hidden print:bg-[#FFFFFF] print:border-none print:shadow-none">
+    <div class="border-b border-[#7A4A65]/50 px-4 py-3 bg-[#0E0C0D] flex items-center justify-between gap-3 flex-wrap print:hidden">
+     <div class="flex items-center gap-2">
+      <i data-lucide="terminal" class="w-4 h-4 text-[#00AFEF]"></i>
+      <span class="text-xs font-bold text-[#FFFFFF] uppercase tracking-wider">Report Viewing Desk</span>
+      <span id="rpId" class="hidden text-[10px] font-mono px-2 py-0.5 rounded bg-[#7A4A65] text-[#E0E9EC] border border-[#7A4A65]"></span>
+     </div>
+     <div id="rpCtl" class="hidden items-center gap-2">
+      <div class="flex rounded-md bg-[#0E0C0D] p-0.5 border border-[#7A4A65]/50">
+       <button id="vmR" onclick="setVM('rendered')">Rendered</button>
+       <button id="vmM" onclick="setVM('raw')">Markdown</button>
+      </div>
+      <button onclick="exportPDF()" class="px-3 py-1.5 rounded-md bg-[#3192BB] hover:bg-[#00AFEF] text-[#FFFFFF] font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#3192BB]/40 transition-colors" title="Export as PDF Document via print preview"><i data-lucide="printer" class="w-3.5 h-3.5"></i><span>Export PDF</span></button>
+      <button onclick="copyMd()" class="p-1.5 rounded-md bg-[#7A4A65] hover:bg-[#BC6382] text-[#E0E9EC] border border-[#7A4A65] text-xs" title="Copy Markdown"><span id="copyIc"><i data-lucide="copy" class="w-3.5 h-3.5"></i></span></button>
+      <button onclick="dlMd()" class="p-1.5 rounded-md bg-[#7A4A65] hover:bg-[#BC6382] text-[#E0E9EC] border border-[#7A4A65] text-xs" title="Download .md File"><i data-lucide="download" class="w-3.5 h-3.5"></i></button>
+     </div>
+    </div>
+    <div id="rpBody" class="flex-1 p-6 overflow-y-auto bg-[#0E0C0D]/50 print:bg-[#FFFFFF] print:p-0 print:text-[#0E0C0D]"></div>
+   </div>
+  </div>
+ </div>
+</main>
+
+<div id="settingsModal" class="hidden fixed inset-0 z-50 bg-[#0E0C0D]/80 backdrop-blur-sm items-center justify-center p-4 print:hidden">
+ <div class="bg-[#0E0C0D] border border-[#7A4A65]/50 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+  <div class="flex items-center justify-between border-b border-[#7A4A65]/50 pb-3">
+   <div class="flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-[#00AFEF]"></i><h3 class="font-bold text-[#FFFFFF] text-base">Cloudflare Worker AI Settings</h3></div>
+   <button onclick="modal('settingsModal',0)" class="text-[#B89898] hover:text-[#FFFFFF]"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+  <div class="space-y-4 text-xs">
+   <div><label class="block font-semibold text-[#E0E9EC] mb-1.5">Execution Mode</label>
+    <div class="grid grid-cols-2 gap-2">
+     <button id="mLive" onclick="setSim(false)"><span class="font-bold">Live Worker API</span><span class="text-[10px] text-[#B89898]">POSTs FormData to worker URL.</span></button>
+     <button id="mSim" onclick="setSim(true)"><span class="font-bold">Browser AI Simulator</span><span class="text-[10px] text-[#B89898]">Local fallback when offline.</span></button>
+    </div></div>
+   <div><label class="block font-semibold text-[#E0E9EC] mb-1">Worker Endpoint URL</label><input id="workerUrl" type="url" value="http://localhost:8787" placeholder="http://localhost:8787" class="inp font-mono"></div>
+   <div><label class="block font-semibold text-[#E0E9EC] mb-1">Target Cloudflare AI Model</label><select id="model" class="inp font-mono"></select></div>
+  </div>
+  <div class="pt-2 flex justify-end"><button onclick="modal('settingsModal',0);toast('Settings saved successfully','success')" class="px-4 py-2 bg-[#3192BB] hover:bg-[#00AFEF] text-[#FFFFFF] font-bold rounded-lg text-xs">Save &amp; Close</button></div>
+ </div>
+</div>
+
+<div id="fileModal" class="hidden fixed inset-0 z-50 bg-[#0E0C0D]/80 backdrop-blur-sm items-center justify-center p-4 print:hidden">
+ <div class="bg-[#0E0C0D] border border-[#7A4A65]/50 rounded-2xl max-w-3xl w-full p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+  <div class="flex items-center justify-between border-b border-[#7A4A65]/50 pb-3">
+   <div class="flex items-center gap-2"><i data-lucide="file-code" class="w-5 h-5 text-[#00AFEF]"></i><h3 id="fmName" class="font-bold text-[#FFFFFF] text-sm font-mono"></h3><span id="fmSize" class="text-xs text-[#B89898]"></span></div>
+   <button onclick="modal('fileModal',0)" class="text-[#B89898] hover:text-[#FFFFFF]"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+  <div class="flex-1 overflow-y-auto bg-[#0E0C0D] p-4 rounded-xl border border-[#7A4A65]/50"><pre id="fmBody" class="font-mono text-xs text-[#3192BB] whitespace-pre-wrap leading-relaxed"></pre></div>
+  <div class="flex justify-end"><button onclick="modal('fileModal',0)" class="px-4 py-1.5 bg-[#7A4A65] hover:bg-[#BC6382] text-[#E0E9EC] rounded-lg text-xs">Close Window</button></div>
+ </div>
+</div>
+
+<footer class="border-t border-[#0E0C0D] bg-[#0E0C0D] py-4 text-center text-[11px] text-[#7A4A65] print:hidden">
+ <p>SENTINEL-AI // Integrated Cyber Incident Reporting Platform • Powered by Cloudflare Workers AI</p>
+</footer>
+
+<script>
+const SAMPLE_TEMPLATES={
+ransomware:{title:'Ransomware Outbreak on Domain Controller & File Servers',type:'Ransomware / Malware',severity:'Critical',startTime:'2026-11-12T03:14',endTime:'2026-11-12T08:45',detectionMethod:'EDR Alert & User Escalation',affectedSystems:'DC-01.corp.internal (10.0.4.15)\nFS-02.finance.corp (10.0.8.22)\nFS-03.hr.corp (10.0.8.23)',impactSummary:'Encrypted critical shared network drives. Volume Shadow Copies deleted via vssadmin. Ransom note dropped demanding 15 BTC. 400+ internal users unable to access share drives.',actionsTaken:'1. Isolated DC-01 and file servers from local VLANs.\n2. Revoked compromised Domain Admin service account credentials.\n3. Preserved volatile RAM dump and system event logs.\n4. Initiated offline backup restoration process.',
+mockLogs:`[2026-11-12T03:14:02Z] EDR-ALERT: Malicious process execution 'vssadmin.exe delete shadows /all /quiet' spawned by cmd.exe (PID: 4920)
+[2026-11-12T03:14:45Z] SECURITY_EVT 4624: Successful Anonymized RDP Logon for user 'svc_backup' from IP 192.168.1.104
+[2026-11-12T03:16:10Z] SYSTEM_ERR: High frequency disk write operations detected on \\\\FS-02\\Finance_2025\\
+[2026-11-12T03:18:00Z] NETWORK_ALERT: Outbound connection to C2 IP 185.220.101.44 over port 8443 established`},
+ddos:{title:'Layer 7 Volumetric HTTP Flood on Payment API',type:'DDoS Attack',severity:'High',startTime:'2026-11-10T14:20',endTime:'2026-11-10T16:05',detectionMethod:'Cloudflare WAF Automated Alert & Origin Latency Spike',affectedSystems:'api.payments-gateway.com\ncdn-edge-us-east.cloudflare.net\nOrigin Load Balancers (172.31.4.10)',impactSummary:'HTTP request rate surged from normal 4.5k RPS to 4.8 Million RPS targeting `/api/v2/checkout/charge`. Payment processing API latency increased from 120ms to 14,500ms, causing 35% transaction failure rate for 45 minutes.',actionsTaken:'1. Enabled Cloudflare "Under Attack Mode".\n2. Implemented custom WAF rate limiting rule on URI path `/api/v2/checkout/*`.\n3. Blocked ASNs associated with infected botnet cluster.\n4. Scaled origin API ECS instances from 8 to 32 containers.',
+mockLogs:`[2026-11-10T14:20:11Z] CF-WAF: Traffic anomaly detected: 4.82M RPS spike from 84,000 distinct IP addresses.
+[2026-11-10T14:21:00Z] HTTP 504 Gateway Timeout count: 42,910 in 60 seconds on origin node app-prod-04.
+[2026-11-10T14:25:30Z] CF-RULE-MATCH: Rule ID 981123 Triggered. Action: JS Challenge applied globally.
+[2026-11-10T15:00:00Z] ORIGIN_METRICS: CPU utilization decreased from 99% to 24%. Latency stabilized to 140ms.`},
+databreach:{title:'S3 Data Exfiltration via Compromised IAM Credential',type:'Data Exfiltration / Cloud Exposure',severity:'High',startTime:'2026-11-08T22:00',endTime:'2026-11-09T02:15',detectionMethod:'AWS CloudTrail Anomaly GuardDuty Alert',affectedSystems:'s3://prod-customer-archive-vault/\nIAM Role: DataPipelineAnalyticsRole',impactSummary:'Anomalous egress of approximately 340 GB of archived customer PDF receipts. Access keys for developer service account leaked in public GitHub repository 4 hours prior.',actionsTaken:'1. Invalidated exposed IAM Access Key ID AKIAIOSFODNN7EXAMPLE.\n2. Applied explicit Deny bucket policy on s3://prod-customer-archive-vault/.\n3. Sent repository removal request to GitHub Trust & Safety.\n4. Commenced forensic review of downloaded object logs.',
+mockLogs:`[2026-11-08T21:45:10Z] CLOUDTRAIL: CreateAccessKey invoked for user 'dev-ci-cd-bot' from IP 54.210.12.99
+[2026-11-08T22:01:44Z] CLOUDTRAIL: GetObject batch requests (14,200 requests/min) originating from external IP 185.191.171.12
+[2026-11-09T01:30:00Z] GUARDDUTY: Alert 'UnauthorizedAccess:IAMUser/AnomalousBehavior' generated. Severity: High.`}};
+const AI_MODELS=[
+{id:'@cf/meta/llama-3.1-8b-instruct',name:'Llama 3.1 8B Instruct (Recommended)',provider:'Meta'},
+{id:'@cf/meta/llama-3-70b-instruct',name:'Llama 3 70B Instruct (Detailed)',provider:'Meta'},
+{id:'@cf/mistral/mistral-7b-instruct-v0.2',name:'Mistral 7B Instruct v0.2',provider:'Mistral'},
+{id:'@cf/deepseek-ai/deepseek-r1-distill-qwen-32b',name:'DeepSeek R1 Distill Qwen 32B',provider:'DeepSeek'}];
+
+const S={sim:false,files:[],tele:'',rep:null,vm:'rendered',hist:[],gen:false,step:0,tab:'generator'};
+const $=i=>document.getElementById(i),v=i=>$(i).value;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ic=()=>lucide.createIcons();
+const KEY='sentinel_incident_reports';
+
+$('model').innerHTML=AI_MODELS.map(m=>`<option value="${m.id}">${m.name} (${m.provider})</option>`).join('');
+try{const s=localStorage.getItem(KEY);if(s)S.hist=JSON.parse(s)}catch(e){console.error('Failed to load saved reports',e)}
+
+let tt;
+function toast(msg,type='info'){
+ const m={success:['check-circle-2','#3192BB'],warning:['alert-triangle','#E0E9EC'],error:['shield-alert','#BC6382'],info:['sparkles','#00AFEF']}[type]||['sparkles','#00AFEF'];
+ $('toastIcon').innerHTML=`<i data-lucide="${m[0]}" class="w-5 h-5 shrink-0" style="color:${m[1]}"></i>`;
+ $('toastMsg').textContent=msg;$('toast').classList.remove('hidden');$('toast').classList.add('flex');ic();
+ clearTimeout(tt);tt=setTimeout(()=>{$('toast').classList.add('hidden');$('toast').classList.remove('flex')},4000);
+}
+function modal(id,on){const e=$(id);e.classList.toggle('hidden',!on);e.classList.toggle('flex',!!on)}
+
+function setSim(b){S.sim=b;paintMode()}
+function paintMode(){
+ $('modeBtn').className='hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono border transition-all '+(S.sim?'bg-[#B89898]/20 text-[#E0E9EC] border-[#B89898]/60':'bg-[#3192BB]/20 text-[#00AFEF] border-[#3192BB]/60');
+ $('modeTxt').textContent=S.sim?'Mode: AI Simulator':'Mode: Worker Endpoint';
+ const b='p-2.5 rounded-lg border text-left flex flex-col gap-1 transition-all ',on='bg-[#3192BB]/20 border-[#00AFEF] text-[#00AFEF]',off='bg-[#0E0C0D] border-[#7A4A65]/50 text-[#B89898]';
+ $('mLive').className=b+(S.sim?off:on);$('mSim').className=b+(S.sim?on:off);
+}
+function paintSev(){
+ const s=v('sev'),c={Critical:'text-[#BC6382] border-[#A9295D]/80 bg-[#A9295D]/10',High:'text-[#B89898] border-[#BC6382]/80 bg-[#BC6382]/10',Medium:'text-[#E0E9EC] border-[#B89898]/80 bg-[#B89898]/10',Low:'text-[#3192BB] border-[#3192BB]/80'}[s];
+ $('sev').className='w-full bg-[#0E0C0D] border rounded-lg px-3 py-2 text-xs font-bold outline-none '+c;
+}
+function setTab(t){
+ S.tab=t;$('genView').classList.toggle('hidden',t!=='generator');$('historyView').classList.toggle('hidden',t!=='history');
+ const b='px-3 py-1 rounded-md text-xs font-medium transition-all ',on='bg-[#3192BB] text-[#FFFFFF] shadow-sm',off='text-[#B89898] hover:text-[#E0E9EC]';
+ $('tabGen').className=b+(t==='generator'?on:off);$('tabHist').className=b+'flex items-center gap-1.5 '+(t==='history'?on:off);
+ if(t==='history')renderHist();
+}
+function paintCount(){const c=$('histCount');c.textContent=S.hist.length;c.classList.toggle('hidden',!S.hist.length)}
+
+function renderHist(){
+ paintCount();$('clearHist').classList.toggle('hidden',!S.hist.length);$('clearHist').classList.toggle('flex',!!S.hist.length);
+ if(!S.hist.length){
+  $('histBody').innerHTML=`<div class="text-center py-20 bg-[#0E0C0D]/30 rounded-2xl border border-dashed border-[#7A4A65]/50"><i data-lucide="file-text" class="w-12 h-12 text-[#7A4A65] mx-auto mb-3"></i><p class="text-[#B89898] text-sm">No stored incident reports found.</p><button onclick="setTab('generator')" class="mt-4 px-4 py-2 bg-[#3192BB] hover:bg-[#00AFEF] text-[#FFFFFF] rounded-lg text-xs font-medium">Create New Incident Report</button></div>`;
+ }else{
+  const sc={Critical:'bg-[#A9295D]/20 text-[#BC6382] border border-[#A9295D]/60',High:'bg-[#BC6382]/20 text-[#B89898] border border-[#BC6382]/60'};
+  $('histBody').innerHTML='<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">'+S.hist.map((r,i)=>`
+  <div class="bg-[#0E0C0D]/80 border border-[#7A4A65]/50 hover:border-[#7A4A65] rounded-xl p-4 flex flex-col justify-between transition-all group"><div class="space-y-3">
+   <div class="flex items-center justify-between gap-2"><span class="font-mono text-xs text-[#00AFEF] font-bold">${esc(r.id)}</span><span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${sc[r.severity]||'bg-[#B89898]/20 text-[#E0E9EC] border border-[#B89898]/60'}">${esc(r.severity)}</span></div>
+   <h3 class="font-bold text-[#FFFFFF] text-base group-hover:text-[#00AFEF] transition-colors line-clamp-2">${esc(r.title)}</h3>
+   <div class="text-xs text-[#B89898] space-y-1"><p class="flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i><span>Type: ${esc(r.type)}</span></p><p class="flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i><span>Latency: ${r.executionTime}ms</span></p><p class="text-[11px]">${new Date(r.timestamp).toLocaleString()}</p></div></div>
+   <div class="mt-4 pt-3 border-t border-[#7A4A65]/80 flex items-center justify-between"><button onclick="openRep(${i})" class="text-xs font-semibold text-[#00AFEF] hover:text-[#00AFEF] flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i>Open Report</button><button onclick="navigator.clipboard.writeText(S.hist[${i}].markdown);toast('Markdown copied','info')" class="text-xs text-[#B89898] hover:text-[#FFFFFF]" title="Copy Markdown"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button></div></div>`).join('')+'</div>';
+ }
+ ic();
+}
+function openRep(i){S.rep=S.hist[i];setTab('generator');renderRep()}
+function clearHist(){S.hist=[];try{localStorage.removeItem(KEY)}catch(e){}renderHist();toast('Cleared report history','info')}
+
+function loadT(k){
+ const t=SAMPLE_TEMPLATES[k];if(!t)return;
+ $('title').value=t.title;$('type').value=t.type;$('sev').value=t.severity;paintSev();$('start').value=t.startTime;$('end').value=t.endTime;
+ $('detect').value=t.detectionMethod;$('systems').value=t.affectedSystems;$('impact').value=t.impactSummary;$('actions').value=t.actionsTaken;
+ S.files=[{file:new File([t.mockLogs],`${k}_telemetry.log`,{type:'text/plain'}),name:`${k}_telemetry.log`,size:`${(t.mockLogs.length/1024).toFixed(2)} KB`,type:'text/plain',content:t.mockLogs,lines:t.mockLogs.split('\n').length}];
+ S.tele=t.mockLogs;renderFiles();toast(`Loaded "${t.title}" template!`,'success');
+}
+function resetForm(){['title','impact','systems','actions'].forEach(i=>$(i).value='');S.files=[];S.tele='';renderFiles();toast('Form reset','info')}
+function renderFiles(){
+ $('fileList').innerHTML=S.files.length?`<span class="text-[11px] font-semibold text-[#B89898]">Attached Artifacts (${S.files.length}):</span>`+S.files.map((f,i)=>`
+ <div class="flex items-center justify-between bg-[#0E0C0D] border border-[#7A4A65]/50 rounded-lg p-2 text-xs font-mono"><div class="flex items-center gap-2 truncate"><i data-lucide="file-code" class="w-4 h-4 text-[#00AFEF] shrink-0"></i><span class="truncate text-[#E0E9EC]">${esc(f.name)}</span><span class="text-[10px] text-[#B89898]">(${f.size})</span></div>
+ <div class="flex items-center gap-2"><button onclick="viewFile(${i})" class="text-[#B89898] hover:text-[#00AFEF] text-[11px] font-sans flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> View</button><button onclick="rmFile(${i})" class="text-[#B89898] hover:text-[#BC6382]"><i data-lucide="x" class="w-3.5 h-3.5"></i></button></div></div>`).join(''):'';
+ ic();
+}
+function viewFile(i){const f=S.files[i];$('fmName').textContent=f.name;$('fmSize').textContent=`(${f.size})`;$('fmBody').textContent=f.content;modal('fileModal',1)}
+function rmFile(i){S.files=S.files.filter((_,j)=>j!==i);S.tele=S.files.map(f=>`--- ${f.name} ---\n${f.content}`).join('\n\n');renderFiles()}
+function upload(files){
+ files=Array.from(files||[]);if(!files.length)return;
+ files.forEach(file=>{const r=new FileReader();r.onload=e=>{const c=e.target.result;
+  S.files.push({file,name:file.name,size:`${(file.size/1024).toFixed(1)} KB`,type:file.type||'text/plain',content:c,lines:typeof c==='string'?c.split('\n').length:0});
+  S.tele=S.tele?S.tele+'\n\n--- '+file.name+' ---\n'+c:c;renderFiles()};r.readAsText(file)});
+ toast(`Attached ${files.length} log file(s)`,'info');
+}
+$('drop').onclick=()=>$('fileIn').click();
+$('drop').ondragover=e=>e.preventDefault();
+$('drop').ondrop=e=>{e.preventDefault();upload(e.dataTransfer.files)};
+$('fileIn').onchange=e=>{upload(e.target.files);e.target.value=''};
+
+function paintGenBtn(){
+ $('genBtn').disabled=S.gen;
+ $('genBtn').innerHTML=S.gen?`<i data-lucide="cpu" class="w-5 h-5 animate-spin text-[#FFFFFF]"></i><span>Processing Threat Telemetry...</span>`:`<i data-lucide="zap" class="w-5 h-5 text-[#E0E9EC] group-hover:scale-110 transition-transform"></i><span>Generate Incident Report via Workers AI</span>`;
+ ic();
+}
+
+async function generate(){
+ const title=v('title');
+ if(!title.trim()){toast('Please enter an Incident Title or Select a Template.','warning');return}
+ S.gen=true;S.step=1;paintGenBtn();renderRep();
+ const t1=setTimeout(()=>{S.step=2;renderRep()},600),t2=setTimeout(()=>{S.step=3;renderRep()},1400);
+ const model=v('model'),type=v('type'),sev=v('sev'),start=v('start'),end=v('end'),detect=v('detect'),systems=v('systems'),impact=v('impact'),actions=v('actions');
+ const payload={incident_title:title,incident_type:type,severity:sev,start_time:start||'Unspecified',end_time:end||'Ongoing / In Progress',detection_method:detect||'Manual Escalation',affected_systems:systems,impact_summary:impact,actions_taken:actions,analyst_notes:'',attached_files_count:S.files.length,logs_telemetry_snippet:S.tele.slice(0,4000),target_model:model};
+ const t0=performance.now();let md='',ms=0;
+ try{
+  if(S.sim){await new Promise(r=>setTimeout(r,1800));ms=Math.round(performance.now()-t0);md=mockAi(payload)}
+  else{
+   const fd=new FormData();
+   fd.append('incident_title',title);fd.append('incident_type',type);fd.append('severity',sev);fd.append('start_time',start||'Unspecified');fd.append('end_time',end||'Ongoing');
+   fd.append('detection_method',detect);fd.append('affected_systems',systems);fd.append('impact_summary',impact);fd.append('actions_taken',actions);fd.append('analyst_notes','');fd.append('target_model',model);
+   S.files.forEach((it,i)=>fd.append(`log_file_${i}`,it.file||new Blob([it.content],{type:'text/plain'}),it.name));
+   const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),120000);
+   try{
+    const res=await fetch(v('workerUrl'),{method:'POST',body:fd,signal:ctl.signal});
+    clearTimeout(to);ms=Math.round(performance.now()-t0);
+    if(!res.ok)throw new Error(`Worker HTTP ${res.status}`);
+    const d=await res.json();
+    md=d.report||d.response||(typeof d==='string'?d:JSON.stringify(d,null,2));
+   }catch(fe){
+    clearTimeout(to);console.warn('Backend fetch failed or timed out. Initiating simulator fallback.',fe);
+    toast(fe.name==='AbortError'?'Worker took longer than 120s. Reverting to AI Simulator mode.':'Backend endpoint unreachable. Reverting to AI Simulator mode.','warning');
+    await new Promise(r=>setTimeout(r,1200));ms=Math.round(performance.now()-t0);md=mockAi(payload);
+   }
+  }
+  const rep={id:'INC-'+Math.floor(100000+Math.random()*900000),title,severity:sev,type,timestamp:new Date().toISOString(),executionTime:ms,model,markdown:md,payload};
+  S.rep=rep;S.hist=[rep,...S.hist.slice(0,19)];
+  try{localStorage.setItem(KEY,JSON.stringify(S.hist))}catch(e){console.error('Failed to save report',e)}
+  paintCount();toast('Incident Report successfully generated!','success');
+ }catch(err){console.error('Report Generation Error:',err);toast(`Error: ${err.message}`,'error')}
+ finally{clearTimeout(t1);clearTimeout(t2);S.gen=false;S.step=0;paintGenBtn();renderRep()}
+}
+
+function exportPDF(){if(!S.rep){toast('No report available to export!','warning');return}toast('Opening PDF Print View...','info');setTimeout(()=>window.print(),300)}
+function copyMd(){if(!S.rep)return;navigator.clipboard.writeText(S.rep.markdown);$('copyIc').innerHTML='<i data-lucide="check" class="w-3.5 h-3.5 text-[#3192BB]"></i>';ic();setTimeout(()=>{$('copyIc').innerHTML='<i data-lucide="copy" class="w-3.5 h-3.5"></i>';ic()},2000);toast('Report markdown copied to clipboard!','info')}
+function dlMd(){
+ if(!S.rep)return;const u=URL.createObjectURL(new Blob([S.rep.markdown],{type:'text/markdown'})),a=document.createElement('a');
+ a.href=u;a.download=`${S.rep.id}_${S.rep.title.replace(/[^a-z0-9]/gi,'_').toLowerCase()}.md`;a.click();URL.revokeObjectURL(u);toast('Downloaded .md report file','success');
+}
+function setVM(m){S.vm=m;renderRep()}
+
+function mockAi(d){
+ const ts=new Date().toUTCString();
+ const sl=d.affected_systems.split('\n').filter(Boolean).map(s=>`  * \`${s.trim()}\``).join('\n')||'  * `Unspecified Assets`';
+ const fs=S.files.length?S.files.map(f=>`- **${f.name}** (${f.size}, ~${f.lines} lines)`).join('\n'):'No external log artifacts submitted.';
+ return `# CYBER INCIDENT REPORT: ${d.incident_title.toUpperCase()}
+**Document Control Reference:** \`REF-${Math.floor(Math.random()*899999+100000)}\`  
+**Generated via:** Cloudflare Workers AI (\`${d.target_model}\`)  
+**Report Date:** ${ts}  
+
+---
+
+## 1. Executive Summary
+
+On **${d.start_time}**, the Security Operations Center (SOC) identified a **${d.severity.toUpperCase()}** severity cybersecurity event classified as **${d.incident_type}**. Primary detection was initiated via **${d.detection_method}**.
+
+* **Current Status:** ${d.end_time.includes('Ongoing')?'⚠️ CONTAINMENT IN PROGRESS':'✅ INCIDENT CONTAINED & REMEDIATED'}
+* **Risk Score Impact:** ${d.severity==='Critical'?'🔴 9.4/10 (CRITICAL CVSS/EPSS)':d.severity==='High'?'🟠 7.8/10 (HIGH)':'🟡 5.2/10 (MEDIUM)'}
+* **Affected Scope:**
+${sl}
+
+### Incident Overview & Business Impact
+${d.impact_summary||'The incident caused elevated operational risk and required emergency isolation of targeted infrastructure.'}
+
+---
+
+## 2. Threat Analysis & MITRE ATT&CK Mapping
+
+\`\`\`
+[${d.start_time||'T-00:00:00'}]  --->  Initial Vector Detected (${d.detection_method})
+[T+00:15:00]  --->  SOC Escalation & Containment Playbook Triggered
+[${d.end_time||'T+02:30:00'}]  --->  Threat Mitigation & Verification Phase Completed
+\`\`\`
+
+| Technique ID | Technique Name | Observation & Evidence Details |
+| :--- | :--- | :--- |
+| **T1059.001** | Command & Scripting Interpreter | Execution of suspicious scripts observed in host telemetry |
+| **T1078.004** | Cloud / Enterprise Accounts | Compromised account permissions utilized for persistence |
+| **T1486 / T1041** | Data Impact & Exfiltration | Volume shadow copy manipulation / Egress bandwidth anomaly |
+| **T1190** | Exploit Public-Facing Application | Edge application perimeter probing and rate limit threshold breaches |
+
+---
+
+## 3. Log Artifact Telemetry & Forensic Findings
+
+### Analyzed Log Artifacts
+${fs}
+
+### Key Forensics Extraction
+\`\`\`syslog
+${d.logs_telemetry_snippet?d.logs_telemetry_snippet.slice(0,600)+'\n...[TRUNCATED FOR EXECUTIVE REPORT]...':'[No raw log stream provided during submission]'}
+\`\`\`
+
+---
+
+## 4. Remediation & Containment Measures Executed
+
+${d.actions_taken?d.actions_taken.split('\n').map(a=>`- ${a}`).join('\n'):'- Immediate network segmentation enforced across affected VLANs.\n- Account credentials revoked and forced SSO session termination.\n- Endpoint Threat Detection & Response (EDR) full-disk telemetry scan initiated.'}
+
+---
+
+## 5. Actionable Recommendations & Prevention Plan
+
+### Immediate Actions (Next 24-48 Hours)
+1. **Rotate Credential Sets:** Execute forced password reset and API token re-issuance for all services linked to affected hosts.
+2. **Perimeter Rule Hardening:** Implement mandatory zero-trust device posture checks on Cloudflare Access for remote access endpoints.
+3. **Forensic Image Retention:** Maintain raw disk dumps and volatile memory captures for a minimum of 90 days for compliance auditing.
+
+### Long-Term Strategic Controls (30-90 Days)
+* **Automated Containment Integration:** Configure Cloudflare Workers & Webhooks to automatically trigger IP isolation upon EDR critical alert triggers.
+* **MFA Enforcement Audit:** Mandate hardware-backed FIDO2/WebAuthn keys for administrative accounts.
+
+---
+*Report certified by **Sentinel Cyber Incident Response Engine** powered by Cloudflare Workers AI.*`;
+}
+
+function inl(s){
+ return esc(s)
+ .replace(/\*\*(.*?)\*\*/g,'<strong class="text-[#FFFFFF] print:text-[#0E0C0D] font-semibold">$1</strong>')
+ .replace(/`([^`]+)`/g,'<code class="bg-[#0E0C0D] text-[#00AFEF] border border-[#7A4A65]/50 px-1.5 py-0.5 rounded font-mono text-xs print:bg-[#E0E9EC] print:text-[#0E0C0D] print:border-[#E0E9EC]">$1</code>')
+ .replace(/🔴 (.*?)\b/g,'<span class="inline-flex items-center text-[#BC6382] font-bold bg-[#A9295D]/20 px-2 py-0.5 rounded border border-[#A9295D]/50 print:bg-[#A9295D] print:text-[#A9295D] print:border-[#A9295D]">$1</span>')
+ .replace(/🟠 (.*?)\b/g,'<span class="inline-flex items-center text-[#B89898] font-bold bg-[#BC6382]/20 px-2 py-0.5 rounded border border-[#BC6382]/50 print:bg-[#BC6382] print:text-[#7A4A65] print:border-[#BC6382]">$1</span>')
+ .replace(/✅ (.*?)\b/g,'<span class="inline-flex items-center text-[#3192BB] font-bold bg-[#3192BB]/20 px-2 py-0.5 rounded border border-[#3192BB]/50 print:bg-[#3192BB] print:text-[#3192BB] print:border-[#3192BB]">$1</span>');
+}
+function md(c){
+ let h='',code=null;
+ for(const l of c.split('\n')){
+  const t=l.trim();
+  if(t.startsWith('```')){
+   if(code!==null){h+=`<div class="my-4 rounded-lg bg-[#0E0C0D] border border-[#7A4A65]/50 p-4 font-mono text-xs overflow-x-auto text-[#3192BB] relative group print:bg-[#E0E9EC] print:text-[#0E0C0D] print:border-[#E0E9EC]"><pre>${esc(code.join('\n'))}</pre></div>`;code=null}
+   else code=[];
+   continue;
+  }
+  if(code!==null){code.push(l);continue}
+  if(l.startsWith('# '))h+=`<h1 class="text-2xl sm:text-3xl font-extrabold text-[#FFFFFF] tracking-tight pt-4 pb-2 border-b border-[#7A4A65]/50 flex items-center gap-2 print:text-[#0E0C0D] print:border-[#E0E9EC]"><i data-lucide="shield-alert" class="w-7 h-7 text-[#00AFEF] inline shrink-0 print:text-[#0E0C0D]"></i>${esc(l.replace('# ',''))}</h1>`;
+  else if(l.startsWith('## '))h+=`<h2 class="text-xl font-bold text-[#00AFEF] pt-5 pb-1 border-b border-[#7A4A65]/60 flex items-center gap-2 print:text-[#0E0C0D] print:border-[#E0E9EC]"><i data-lucide="terminal" class="w-5 h-5 text-[#00AFEF] shrink-0 print:text-[#7A4A65]"></i>${esc(l.replace('## ',''))}</h2>`;
+  else if(l.startsWith('### '))h+=`<h3 class="text-base font-semibold text-[#E0E9EC] pt-3 print:text-[#0E0C0D]">${esc(l.replace('### ',''))}</h3>`;
+  else if(t==='---')h+='<hr class="border-[#7A4A65]/50 my-4 print:border-[#E0E9EC]">';
+  else if(t.startsWith('* ')||t.startsWith('- '))h+=`<div class="flex items-start gap-2.5 ml-2 my-1"><div class="w-1.5 h-1.5 rounded-full bg-[#00AFEF] mt-2 shrink-0 print:bg-[#0E0C0D]"></div><p class="text-sm text-[#E0E9EC] print:text-[#0E0C0D]">${inl(t.replace(/^[\*\-]\s+/,''))}</p></div>`;
+  else if(t.startsWith('|')){
+   if(l.includes('---'))continue;
+   h+=`<div class="grid grid-cols-3 gap-2 bg-[#0E0C0D]/60 p-2.5 rounded border border-[#7A4A65]/50 text-xs my-1 font-mono print:bg-[#FFFFFF] print:border-[#E0E9EC]">${l.split('|').filter(x=>x.trim()!=='').map(x=>`<span class="truncate text-[#E0E9EC] print:text-[#0E0C0D]">${inl(x.trim())}</span>`).join('')}</div>`;
+  }
+  else if(!t)h+='<div class="h-2"></div>';
+  else h+=`<p class="text-sm text-[#E0E9EC] leading-relaxed print:text-[#0E0C0D]">${inl(l)}</p>`;
+ }
+ return `<div class="max-w-none space-y-4 text-[#E0E9EC] font-sans leading-relaxed print:text-[#0E0C0D]">${h}</div>`;
+}
+
+function renderRep(){
+ const r=S.rep,b=$('rpBody');
+ $('rpId').classList.toggle('hidden',!r);if(r)$('rpId').textContent=r.id;
+ $('rpCtl').classList.toggle('hidden',!r);$('rpCtl').classList.toggle('flex',!!r);
+ const vb='px-2.5 py-1 text-[11px] font-medium rounded ',on='bg-[#7A4A65] text-[#00AFEF]',off='text-[#B89898]';
+ $('vmR').className=vb+(S.vm==='rendered'?on:off);$('vmM').className=vb+(S.vm==='raw'?on:off);
+ if(S.gen){
+  const o=n=>S.step>=n?'opacity-100':'opacity-40';
+  b.innerHTML=`<div class="h-full min-h-[400px] flex flex-col items-center justify-center text-center space-y-6 print:hidden"><div class="relative"><div class="w-20 h-20 rounded-full border-4 border-[#00AFEF]/20 border-t-[#00AFEF] animate-spin"></div><i data-lucide="cpu" class="w-8 h-8 text-[#00AFEF] absolute inset-0 m-auto animate-pulse"></i></div>
+  <div class="space-y-2 max-w-sm"><h3 class="text-base font-bold text-[#FFFFFF] font-mono">Synthesizing Cyber Incident Report</h3><div class="text-xs text-[#00AFEF] font-mono space-y-1"><p class="${o(1)}">[1/3] Parsing log telemetry &amp; threat indicators...</p><p class="${o(2)}">[2/3] Constructing Workers AI prompt context...</p><p class="${o(3)}">[3/3] Running inference on ${esc(v('model').split('/')[2])}...</p></div></div></div>`;
+ }else if(r){
+  b.innerHTML=`<div><div class="mb-6 pb-4 border-b border-[#7A4A65]/50 flex items-center justify-between gap-4 text-xs font-mono text-[#B89898] flex-wrap print:hidden"><div class="flex items-center gap-3"><span class="flex items-center gap-1 text-[#E0E9EC]"><i data-lucide="clock" class="w-3.5 h-3.5 text-[#00AFEF]"></i>${new Date(r.timestamp).toLocaleTimeString()}</span><span>|</span><span class="flex items-center gap-1"><i data-lucide="zap" class="w-3.5 h-3.5 text-[#E0E9EC]"></i>Latency: ${r.executionTime}ms</span></div><span class="px-2 py-0.5 rounded bg-[#0E0C0D] border border-[#7A4A65]/50 text-[#E0E9EC]">${esc(r.model)}</span></div>`+
+  (S.vm==='rendered'?md(r.markdown):`<pre class="font-mono text-xs text-[#E0E9EC] bg-[#0E0C0D] p-4 rounded-xl border border-[#7A4A65]/50 overflow-x-auto whitespace-pre-wrap print:bg-[#FFFFFF] print:text-[#0E0C0D]">${esc(r.markdown)}</pre>`)+'</div>';
+ }else{
+  b.innerHTML=`<div class="h-full min-h-[420px] flex flex-col items-center justify-center text-center p-8 space-y-4 print:hidden"><div class="p-4 rounded-full bg-[#0E0C0D] border border-[#7A4A65]/50"><i data-lucide="shield-alert" class="w-12 h-12 text-[#B89898]"></i></div><div class="max-w-md space-y-1"><h3 class="text-base font-bold text-[#FFFFFF]">No Report Generated Yet</h3><p class="text-xs text-[#B89898]">Fill out the incident form or load one of the sample templates on the left, then hit <strong class="text-[#00AFEF] font-semibold">Generate Incident Report</strong>.</p></div></div>`;
+ }
+ ic();
+}
+
+paintMode();paintSev();setTab('generator');paintGenBtn();renderFiles();renderRep();paintCount();
+</script>
+</body>
+</html>
